@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sports 803 · AI Auto-Post Dashboard v5</title>
+<style>
+:root {
+  --bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;--border:#1e2d45;
+  --accent:#e63946;--accent2:#f4a261;--blue:#4cc9f0;--green:#06d6a0;
+  --text:#e2e8f0;--muted:#64748b;--card:#111827;--radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+a{color:var(--blue);text-decoration:none}
+input,select,textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 10px;font-size:13px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+button{cursor:pointer;border:none;border-radius:6px;padding:7px 14px;font-size:13px;font-weight:600;transition:.2s}
+.btn{background:var(--accent);color:#fff}.btn:hover{background:#c1121f}
+.btn-blue{background:var(--blue);color:#0a0e1a}.btn-blue:hover{opacity:.85}
+.btn-green{background:var(--green);color:#0a0e1a}.btn-green:hover{opacity:.85}
+.btn-orange{background:var(--accent2);color:#0a0e1a}.btn-orange:hover{opacity:.85}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-ghost:hover{background:var(--bg3)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:52px;position:sticky;top:0;z-index:100}
+.topbar .logo{font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.5px;white-space:nowrap}
+.topbar .logo span{color:var(--text)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);min-height:calc(100vh - 52px);padding:16px 0;position:fixed;top:52px;left:0}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:9px 20px;color:var(--muted);font-size:13px;font-weight:500;transition:.15s;border-left:3px solid transparent}
+.sidebar-nav a:hover,.sidebar-nav a.active{color:var(--text);background:var(--bg3);border-left-color:var(--accent)}
+.sidebar-nav a .ico{font-size:16px;width:20px;text-align:center}
+.main{margin-left:220px;padding:24px}
+.page{display:none}.page.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.card-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.event-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.event-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.event-card.has-highlights{border-color:rgba(244,162,97,.4)}
+.ec-league{display:flex;align-items:center;justify-content:space-between;font-size:.72rem}
+.ec-league-name{color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.ec-status{padding:2px 8px;border-radius:10px;font-weight:700;font-size:.68rem;background:#1a2235;color:var(--muted)}
+.ec-status.live{background:rgba(230,57,70,.15);color:var(--accent);animation:pulse 1.5s infinite}
+.ec-status.final{background:rgba(6,214,160,.1);color:var(--green)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ec-match{display:flex;align-items:center;gap:10px}
+.ec-team{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.ec-team-logo{width:40px;height:40px;object-fit:contain;border-radius:4px;background:transparent}
+.ec-team-placeholder{width:40px;height:40px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ec-score{font-size:1.3rem;font-weight:800;color:var(--text);min-width:48px;text-align:center}
+.ec-time{font-size:.72rem;color:var(--muted);text-align:center}
+.ec-event-img{width:100%;height:80px;object-fit:cover;border-radius:6px;background:var(--bg3)}
+.ec-race-title{font-size:.9rem;font-weight:700;color:var(--text)}
+.ec-race-venue{font-size:.75rem;color:var(--muted);margin-top:2px}
+.ec-race-entries{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.ec-race-entry{display:flex;align-items:center;gap:7px;font-size:.76rem;padding:3px 0;border-bottom:1px solid var(--border)}
+.ec-race-entry:last-child{border-bottom:none}
+.ec-race-pos{font-weight:800;color:var(--accent2);min-width:22px}
+.ec-race-entry img{width:18px;height:18px;object-fit:contain;border-radius:2px}
+.ec-actions{display:flex;gap:6px;flex-wrap:wrap}
+.ec-actions button{flex:1;font-size:.72rem;padding:5px 8px}
+.post-badge{font-size:.65rem;padding:2px 7px;border-radius:8px;font-weight:700;margin-left:auto}
+.post-badge.draft{background:#1a2e1a;color:#56d364;border:1px solid #238636}
+.post-badge.live{background:#1a2a3e;color:var(--blue);border:1px solid var(--blue)}
+.post-badge.scheduled{background:#2e2416;color:var(--accent2);border:1px solid var(--accent2)}
+.post-badge.highlights{background:#2e1a00;color:var(--accent2);border:1px solid var(--accent2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:4px}
+.form-group{margin-bottom:12px}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-box .num{font-size:1.6rem;font-weight:800;color:var(--accent)}
+.stat-box .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+.tag .remove{cursor:pointer;color:var(--accent);font-weight:700}
+.toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.toggle input{display:none}
+.toggle-slider{width:36px;height:20px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;position:relative;transition:.2s}
+.toggle-slider::after{content:'';position:absolute;width:14px;height:14px;background:var(--muted);border-radius:50%;top:2px;left:2px;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--green);border-color:var(--green)}
+.toggle input:checked+.toggle-slider::after{background:#fff;left:18px}
+.ch-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.ch-table th{background:var(--bg3);color:var(--muted);text-transform:uppercase;font-size:.68rem;letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.ch-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.ch-table tr:hover td{background:var(--bg3)}
+#toast-container{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999}
+.toast{padding:10px 16px;border-radius:8px;font-size:.82rem;font-weight:600;animation:slide-in .3s ease;max-width:320px}
+.toast.success{background:#1a3a2a;border:1px solid var(--green);color:var(--green)}
+.toast.error{background:#3a1a1a;border:1px solid var(--accent);color:var(--accent)}
+.toast.info{background:#1a2a3a;border:1px solid var(--blue);color:var(--blue)}
+@keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;padding:24px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-head h3{font-size:1rem;font-weight:700}
+.modal-head .close-btn{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
+.league-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.league-pill{padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:700;background:var(--bg3);border:1px solid var(--border);cursor:pointer;transition:.15s;white-space:nowrap}
+.league-pill.active{background:rgba(230,57,70,.15);border-color:var(--accent);color:var(--accent)}
+.league-pill:hover{border-color:var(--muted)}
+.search-bar{position:relative;margin-bottom:16px}
+.search-bar input{padding-left:32px}
+.search-bar::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.8rem}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stream-sources{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.stream-source-row{display:flex;gap:6px;align-items:center}
+.stream-source-row input{flex:1}
+.iframe-preview{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:.72rem;color:var(--muted);word-break:break-all;margin-top:8px;max-height:100px;overflow-y:auto;font-family:monospace}
+.highlights-row{display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(244,162,97,.07);border:1px solid rgba(244,162,97,.25);border-radius:6px;font-size:.73rem}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Sports <span>803</span> <span style="font-size:.65rem;color:var(--muted);font-weight:400;margin-left:4px">AI Auto-Post v5</span></div>
+  <div class="topbar-right">
+    <span id="auth-status" style="font-size:.75rem;color:var(--muted)">⚪ Not signed in</span>
+    <button class="btn btn-sm" id="auth-btn" onclick="handleAuth()">Sign in with Google</button>
+    <button class="btn-ghost btn-sm" onclick="openPage('settings')">⚙️</button>
+  </div>
+</div>
+
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <a href="#" class="active" onclick="openPage('dashboard');return false"><span class="ico">🏠</span> Dashboard</a>
+    <a href="#" onclick="openPage('events');return false"><span class="ico">📅</span> Events</a>
+    <a href="#" onclick="openPage('compose');return false"><span class="ico">✍️</span> Compose Post</a>
+    <a href="#" onclick="openPage('channels');return false"><span class="ico">📺</span> Channels</a>
+    <a href="#" onclick="openPage('scheduler');return false"><span class="ico">⏰</span> Scheduler</a>
+    <a href="#" onclick="openPage('thumbnail');return false"><span class="ico">🖼️</span> Thumbnails</a>
+    <a href="#" onclick="openPage('settings');return false"><span class="ico">⚙️</span> Settings</a>
+  </div>
+  <div style="padding:16px 20px;margin-top:16px">
+    <div style="font-size:.7rem;color:var(--muted)">Blog ID</div>
+    <div id="sb-blogid" style="font-size:.72rem;color:var(--text);word-break:break-all;margin-top:2px">—</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <h2 style="margin-bottom:16px;font-size:1.1rem">Dashboard</h2>
+  <div class="stats-bar">
+    <div class="stat-box"><div class="num" id="stat-events">0</div><div class="lbl">Events Today</div></div>
+    <div class="stat-box"><div class="num" id="stat-posted">0</div><div class="lbl">Posts Made</div></div>
+    <div class="stat-box"><div class="num" id="stat-scheduled">0</div><div class="lbl">Scheduled</div></div>
+    <div class="stat-box"><div class="num" id="stat-channels">0</div><div class="lbl">Channels</div></div>
+    <div class="stat-box"><div class="num" id="stat-leagues">0</div><div class="lbl">Active Leagues</div></div>
+    <div class="stat-box"><div class="num" id="stat-highlights">0</div><div class="lbl">Highlights Posted</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Quick Actions</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <button class="btn" onclick="openPage('events');fetchAllEvents()">🔄 Fetch Today's Events</button>
+      <button class="btn-blue" onclick="openPage('compose')">✍️ Compose Post</button>
+      <button class="btn-green" onclick="openPage('scheduler')">⏰ Auto Scheduler</button>
+      <button class="btn-orange" onclick="checkHighlights()">🎬 Check for Highlights</button>
+      <button class="btn-ghost" onclick="openPage('channels')">📺 Manage Channels</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Recent Posts</div>
+    <div id="recent-posts-list" style="font-size:.8rem;color:var(--muted)">No posts yet this session.</div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<div class="page" id="page-events">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <h2 style="font-size:1.1rem">Events</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="fetchAllEvents()"><span id="fetch-spinner" style="display:none" class="spinner"></span>🔄 Fetch All</button>
+      <button class="btn-orange" onclick="checkHighlights()">🎬 Post Highlights</button>
+      <button class="btn-green" onclick="bulkPostAll()">📤 Bulk Post All</button>
+    </div>
+  </div>
+  <div class="league-pills" id="league-filter-pills"></div>
+  <div class="search-bar"><input type="text" id="event-search" placeholder="Search events…" oninput="filterEvents()"></div>
+  <div class="events-grid" id="events-grid">
+    <div style="color:var(--muted);font-size:.85rem;grid-column:1/-1;padding:30px;text-align:center">Click "Fetch All" to load today's events.</div>
+  </div>
+</div>
+
+<!-- COMPOSE -->
+<div class="page" id="page-compose">
+  <h2 style="margin-bottom:16px;font-size:1.1rem">Compose Post</h2>
+  <div style="display:grid;grid-template-columns:1fr 400px;gap:20px">
+    <div>
+      <div class="card">
+        <div class="card-title">Post Details</div>
+        <div class="form-group"><label>Post Title</label><input type="text" id="post-title" placeholder="e.g. Man City vs Arsenal – Match Preview"></div>
+        <div class="form-group"><label>Post Body</label><textarea id="post-body" rows="14" placeholder="Article content…"></textarea></div>
+        <div class="form-row">
+          <div><label>Labels (comma separated)</label><input type="text" id="post-labels" value="sports 803,live stream"></div>
+          <div><label>Custom Slug</label><input type="text" id="post-slug" placeholder="auto-generated"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Post Status</label>
+            <select id="post-status">
+              <option value="DRAFT">Draft</option>
+              <option value="LIVE">Live</option>
+              <option value="SCHEDULED">Scheduled</option>
+            </select>
+          </div>
+          <div><label>Schedule Time</label><input type="datetime-local" id="post-schedule-time"></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap">
+          <button class="btn" onclick="postToBlogger()">📤 Post to Blogger</button>
+          <button class="btn-blue" onclick="generateAIContent()">🤖 AI Generate</button>
+          <button class="btn-orange" onclick="openHighlightsModal()">🎬 Post Highlights</button>
+          <button class="btn-ghost" onclick="previewPost()">👁 Preview</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Thumbnail</div>
+        <canvas id="thumb-canvas" width="400" height="210" style="background:#111;border-radius:6px;max-width:100%"></canvas>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn-green btn-sm" onclick="generateThumbnail()">🖼️ Generate</button>
+          <button class="btn-blue btn-sm" onclick="uploadToImgbb()">☁️ Upload</button>
+        </div>
+        <div style="font-size:.67rem;color:var(--muted);margin-top:5px">Logos load via multi-source system — check console (F12) for details</div>
+        <div style="margin-top:8px"><label>Image URL</label><input type="text" id="thumb-url" placeholder="Upload to get URL…" readonly></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎥 Stream Link Builder</div>
+        <div class="form-group"><label>Player Base URL</label><input type="text" id="player-base" value="https://soulmap1.blogspot.com/p/media-player.html"></div>
+        <label style="margin-bottom:6px">Stream Sources (mora= URLs)</label>
+        <div class="stream-sources" id="stream-sources-list">
+          <div class="stream-source-row">
+            <input type="text" placeholder="https://stream-source-1.com/…" class="mora-input">
+            <button class="btn-ghost btn-sm" onclick="removeStreamSource(this)">✕</button>
+          </div>
+        </div>
+        <button class="btn-ghost btn-sm" onclick="addStreamSource()" style="margin-bottom:10px">+ Add Source</button>
+        <div class="iframe-preview" id="iframe-preview-box">iframe will appear here…</div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn-blue btn-sm" onclick="buildAndInsertIframe()">Insert iframe into Post</button>
+          <button class="btn-ghost btn-sm" onclick="previewIframe()">Preview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANNELS -->
+<div class="page" id="page-channels">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <h2 style="font-size:1.1rem">Channel Library</h2>
+    <button class="btn" onclick="openAddChannel()">+ Add Channel</button>
+  </div>
+  <div class="search-bar"><input type="text" id="ch-search" placeholder="Search channels…" oninput="filterChannels()"></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="ch-table">
+      <thead><tr><th>Channel</th><th>Sport/League</th><th>Stream URL</th><th>Region</th><th>Actions</th></tr></thead>
+      <tbody id="channels-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SCHEDULER -->
+<div class="page" id="page-scheduler">
+  <h2 style="margin-bottom:16px;font-size:1.1rem">Auto Scheduler</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="card">
+      <div class="card-title">Settings</div>
+      <div class="form-group"><label>Post Timing (before event)</label>
+        <select id="sched-timing">
+          <option value="60">1 hour before</option>
+          <option value="120">2 hours before</option>
+          <option value="180">3 hours before</option>
+          <option value="360">6 hours before</option>
+          <option value="720">12 hours before</option>
+          <option value="1440">1 day before</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Default Post Status</label>
+        <select id="sched-status">
+          <option value="DRAFT">Draft</option>
+          <option value="LIVE">Live (publish immediately)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Auto-post Highlights after event ends</label>
+        <label class="toggle" style="margin-top:6px">
+          <input type="checkbox" id="auto-highlights">
+          <div class="toggle-slider"></div>
+          <span style="font-size:.82rem">Enable Auto Highlights</span>
+        </label>
+      </div>
+      <label class="toggle" style="margin-top:8px">
+        <input type="checkbox" id="sched-enabled" onchange="toggleScheduler()">
+        <div class="toggle-slider"></div>
+        <span style="font-size:.82rem">Enable Auto Scheduler</span>
+      </label>
+    </div>
+    <div class="card">
+      <div class="card-title">Scheduled Queue</div>
+      <div id="sched-queue" style="font-size:.8rem;color:var(--muted)">Fetch events first.</div>
+    </div>
+  </div>
+</div>
+
+<!-- THUMBNAIL -->
+<div class="page" id="page-thumbnail">
+  <h2 style="margin-bottom:16px;font-size:1.1rem">Thumbnail Builder</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="card">
+      <div class="card-title">Settings</div>
+      <div class="form-row">
+        <div><label>Home Team / Event Name</label><input type="text" id="tb-home" placeholder="Man City / GP Name"></div>
+        <div><label>Away Team (leave blank for races)</label><input type="text" id="tb-away" placeholder="Arsenal"></div>
+      </div>
+      <div class="form-row">
+        <div><label>Home Logo URL</label><input type="text" id="tb-home-logo" placeholder="https://…"></div>
+        <div><label>Away Logo URL</label><input type="text" id="tb-away-logo" placeholder="https://…"></div>
+      </div>
+      <div class="form-row">
+        <div><label>League Name</label><input type="text" id="tb-league" placeholder="Premier League"></div>
+        <div><label>Date/Time</label><input type="text" id="tb-datetime" placeholder="Sun 23 Mar · 15:00"></div>
+      </div>
+      <div class="form-row">
+        <div><label>BG Color 1</label><input type="color" id="tb-bg1" value="#0a0e1a"></div>
+        <div><label>BG Color 2</label><input type="color" id="tb-bg2" value="#1a0010"></div>
+      </div>
+      <div class="form-group"><label>Event Banner Image URL (optional override)</label><input type="text" id="tb-banner" placeholder="Auto-fetched from ESPN or circuit map"></div>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+        <button class="btn" onclick="buildThumbnail()">🖼️ Build</button>
+        <button class="btn-blue" onclick="uploadThumbFromBuilder()">☁️ Upload</button>
+        <button class="btn-ghost" onclick="downloadThumb()">⬇️ Download</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Preview (800×420)</div>
+      <canvas id="thumb-canvas-big" width="800" height="420" style="max-width:100%;border-radius:8px;background:#111"></canvas>
+      <div style="margin-top:8px"><label>imgbb URL</label><input type="text" id="tb-imgbb-url" readonly placeholder="Upload to get URL…"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <h2 style="margin-bottom:16px;font-size:1.1rem">Settings</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="card">
+      <div class="card-title">Blogger / Google OAuth</div>
+      <div class="form-group"><label>Blogger Blog ID</label><input type="text" id="cfg-blogid" placeholder="123456789012345678"></div>
+      <div class="form-group"><label>Google OAuth Client ID</label><input type="text" id="cfg-clientid" placeholder="xxxx.apps.googleusercontent.com"></div>
+      <button class="btn btn-sm" onclick="saveConfig()">Save</button>
+    </div>
+    <div class="card">
+      <div class="card-title">imgbb API</div>
+      <div class="form-group"><label>imgbb API Key</label><input type="text" id="cfg-imgbb" value="c8cd5657bfdfc6c298c9366deebfa7a7"></div>
+      <div class="form-group"><label>Highlights Source URL Template</label><input type="text" id="cfg-highlights-url" placeholder="https://highlights-api.com/{id}"></div>
+      <button class="btn btn-sm" onclick="saveConfig()">Save</button>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-title">Active Leagues</div>
+      <div id="league-toggles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Global Post Labels</div>
+      <div class="form-group"><input type="text" id="new-label-input" placeholder="Add label + Enter"></div>
+      <div class="tags" id="global-labels-tags"></div>
+      <button class="btn btn-sm" style="margin-top:10px" onclick="saveConfig()">Save Labels</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Data</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-ghost btn-sm" onclick="exportConfig()">📤 Export Config</button>
+        <button class="btn-ghost btn-sm" onclick="importConfig()">📥 Import Config</button>
+        <button class="btn btn-sm" style="background:#3d0c0c" onclick="clearStorage()">🗑 Clear All Data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-preview">
+  <div class="modal">
+    <div class="modal-head"><h3>Post Preview</h3><button class="close-btn" onclick="closeModal('modal-preview')">✕</button></div>
+    <div id="preview-title" style="font-size:1.1rem;font-weight:700;margin-bottom:12px"></div>
+    <div id="preview-body" style="font-size:.85rem;line-height:1.7;color:var(--muted)"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-channel">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-channel-title">Add Channel</h3><button class="close-btn" onclick="closeModal('modal-channel')">✕</button></div>
+    <div class="form-row">
+      <div><label>Channel Name</label><input type="text" id="ch-name" placeholder="TNT Sports"></div>
+      <div><label>Region</label><input type="text" id="ch-region" placeholder="UK, US, Global…"></div>
+    </div>
+    <div class="form-row">
+      <div><label>Sport / League Tags</label><input type="text" id="ch-sport" placeholder="epl, ucl, f1…"></div>
+      <div><label>Stream URL</label><input type="text" id="ch-url" placeholder="https://…"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" onclick="saveChannel()">Save Channel</button>
+      <button class="btn-ghost" onclick="closeModal('modal-channel')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-highlights">
+  <div class="modal">
+    <div class="modal-head"><h3>🎬 Post Highlights</h3><button class="close-btn" onclick="closeModal('modal-highlights')">✕</button></div>
+    <div class="form-group">
+      <label>Select Event</label>
+      <select id="hl-event-select" onchange="onHighlightEventChange()">
+        <option value="">— choose event —</option>
+      </select>
+    </div>
+    <div id="hl-existing-post" style="display:none" class="highlights-row">
+      <span>📝 Existing post found:</span>
+      <a id="hl-post-link" href="#" target="_blank" style="font-size:.73rem">View Post</a>
+      <span style="margin-left:auto;color:var(--green);font-size:.72rem">Will be updated with highlights</span>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>Highlights Embed / Video URL</label>
+      <input type="text" id="hl-video-url" placeholder="https://youtube.com/embed/… or iframe src">
+    </div>
+    <div class="form-group">
+      <label>Highlights Body Text (auto-generated, editable)</label>
+      <textarea id="hl-body" rows="10" placeholder="Highlights article…"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn-blue btn-sm" onclick="generateHighlightsText()">🤖 AI Generate Text</button>
+      <button class="btn btn-sm" onclick="postHighlights()">📤 Update/Post Highlights</button>
+      <button class="btn-ghost btn-sm" onclick="closeModal('modal-highlights')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-iframe-preview">
+  <div class="modal" style="max-width:820px">
+    <div class="modal-head"><h3>iframe Preview</h3><button class="close-btn" onclick="closeModal('modal-iframe-preview')">✕</button></div>
+    <div id="iframe-preview-render"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const STORAGE_KEY_CFG      = 's803_config_v5';
+const STORAGE_KEY_CHANNELS = 's803_channels_v5';
+const STORAGE_KEY_POSTS    = 's803_posts_v5';
+const STORAGE_TTL_MS       = 7 * 24 * 60 * 60 * 1000;
+const PLAYER_BASE_DEFAULT  = 'https://soulmap1.blogspot.com/p/media-player.html';
+const ESPN_BASE            = 'https://site.api.espn.com/apis/site/v2/sports';
+const TSDB_BASE            = 'https://www.thesportsdb.com/api/v1/json/3';
+
+// ═══════════════════════════════════════════════════════════
+// LOGO CACHE & MANUAL OVERRIDES
+// ═══════════════════════════════════════════════════════════
+const LOGO_CACHE = {};
+const MANUAL_LOGOS = {
+  // Premier League
+  'arsenal': 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
+  'chelsea': 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
+  'liverpool': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
+  'manchester city': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
+  'manchester united': 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg',
+  'tottenham': 'https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg',
+  'leicester city': 'https://upload.wikimedia.org/wikipedia/en/6/63/Leicester_City_crest.svg',
+  'west ham': 'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg',
+  // La Liga
+  'real madrid': 'https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg',
+  'barcelona': 'https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg',
+  'atletico madrid': 'https://upload.wikimedia.org/wikipedia/en/f/f9/Atletico_Madrid_2017_logo.svg',
+  // Serie A
+  'juventus': 'https://upload.wikimedia.org/wikipedia/en/6/67/Juventus_FC_2017_logo.png',
+  'ac milan': 'https://upload.wikimedia.org/wikipedia/en/d/d0/AC_Milan_logo.svg',
+  'inter milan': 'https://upload.wikimedia.org/wikipedia/en/0/05/Inter_Milan_logo.svg',
+  // Bundesliga
+  'bayern munich': 'https://upload.wikimedia.org/wikipedia/commons/1/1c/FC_Bayern_München_logo_%282017%29.svg',
+  'borussia dortmund': 'https://upload.wikimedia.org/wikipedia/commons/6/67/BVB_Logo.svg',
+  // NBA
+  'los angeles lakers': 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg',
+  'golden state warriors': 'https://upload.wikimedia.org/wikipedia/en/0/01/Golden_State_Warriors_logo.svg',
+  'chicago bulls': 'https://upload.wikimedia.org/wikipedia/en/6/67/Chicago_Bulls_logo.svg',
+  // F1
+  'ferrari': 'https://upload.wikimedia.org/wikipedia/en/e/ed/Scuderia_Ferrari_Logo.svg',
+  'mercedes': 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Mercedes-Benz_Logo.svg',
+  'red bull racing': 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Bull_Racing_logo.svg',
+  // UFC
+  'conor mcgregor': 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Conor_McGregor_2018.jpg',
+  'jon jones': 'https://upload.wikimedia.org/wikipedia/commons/2/27/Jon_Jones_2018.png',
+};
+function getManualLogo(teamName) {
+  const normalized = teamName.toLowerCase().trim();
+  const found = MANUAL_LOGOS[normalized];
+  if (found) console.log(`[Logo] Manual override for ${teamName}: ${found}`);
+  return found || null;
+}
+
+function getCachedLogo(teamName) {
+  const key = teamName.toLowerCase().trim();
+  return LOGO_CACHE[key] || null;
+}
+function setCachedLogo(teamName, url) {
+  const key = teamName.toLowerCase().trim();
+  if (url) LOGO_CACHE[key] = url;
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAME NORMALIZATION
+// ═══════════════════════════════════════════════════════════
+function normalizeTeamName(name) {
+  const map = {
+    'man utd': 'manchester united',
+    'man united': 'manchester united',
+    'man city': 'manchester city',
+    'spurs': 'tottenham hotspur',
+    'tottenham': 'tottenham hotspur',
+    'newcastle': 'newcastle united',
+    'leeds': 'leeds united',
+    'wolves': 'wolverhampton wanderers',
+    'brighton': 'brighton & hove albion',
+    'brentford': 'brentford fc',
+    'crystal palace': 'crystal palace',
+    'aston villa': 'aston villa',
+    'everton': 'everton',
+    'southampton': 'southampton',
+    'norwich': 'norwich city',
+    'watford': 'watford',
+    'burnley': 'burnley',
+    'real': 'real madrid',
+    'barca': 'barcelona',
+    'atleti': 'atletico madrid',
+    'juve': 'juventus',
+    'milan': 'ac milan',
+    'inter': 'inter milan',
+    'bayern': 'bayern munich',
+    'dortmund': 'borussia dortmund',
+    'psg': 'paris saint-germain',
+    'lakers': 'los angeles lakers',
+    'warriors': 'golden state warriors',
+    'bulls': 'chicago bulls',
+  };
+  const lower = name.toLowerCase().trim();
+  return map[lower] || name;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRIMARY FETCHERS
+// ═══════════════════════════════════════════════════════════
+async function fetchTheSportsDB(teamName) {
+  if (!teamName) return '';
+  const original = teamName;
+  teamName = normalizeTeamName(teamName);
+  const key = teamName.toLowerCase().trim();
+  if (LOGO_CACHE[key]) return LOGO_CACHE[key];
+  
+  const variations = [teamName];
+  let cleaned = teamName.replace(/\s*(FC|SC|CF|UD|CD|Racing|Club|Sporting|Athletic)\s*$/i, '').trim();
+  if (cleaned !== teamName) variations.push(cleaned);
+  const firstWord = teamName.split(/\s+/)[0];
+  if (firstWord !== teamName && !variations.includes(firstWord)) variations.push(firstWord);
+  
+  for (const name of variations) {
+    try {
+      console.log(`[Logo] Trying TheSportsDB for "${name}"`);
+      const res = await fetch(`${TSDB_BASE}/searchteams.php?t=${encodeURIComponent(name)}`);
+      const data = await res.json();
+      const team = data?.teams?.[0];
+      if (team) {
+        const url = team.strTeamBadge || team.strTeamLogo || '';
+        if (url) {
+          LOGO_CACHE[key] = url;
+          console.log(`[Logo] TheSportsDB found: ${url}`);
+          return url;
+        }
+      }
+    } catch (e) {
+      console.warn(`[Logo] TheSportsDB error for ${name}:`, e.message);
+    }
+  }
+  LOGO_CACHE[key] = '';
+  console.log(`[Logo] No TheSportsDB logo for ${teamName}`);
+  return '';
+}
+
+async function fetchTheSportsDBPlayer(playerName) {
+  if (!playerName) return '';
+  try {
+    const res = await fetch(`${TSDB_BASE}/searchplayers.php?p=${encodeURIComponent(playerName)}`);
+    const data = await res.json();
+    const player = data?.player?.[0];
+    return player?.strThumb || player?.strCutout || player?.strRender || '';
+  } catch {
+    return '';
+  }
+}
+
+async function fetchCricketLogo(teamName) {
+  if (!teamName) return '';
+  const lc = teamName.toLowerCase();
+  const countryMap = {
+    'india': 'https://flagcdn.com/w320/in.png',
+    'australia': 'https://flagcdn.com/w320/au.png',
+    'england': 'https://flagcdn.com/w320/gb-eng.png',
+    'pakistan': 'https://flagcdn.com/w320/pk.png',
+    'south africa': 'https://flagcdn.com/w320/za.png',
+    'west indies': 'https://flagcdn.com/w320/bb.png',
+    'new zealand': 'https://flagcdn.com/w320/nz.png',
+    'sri lanka': 'https://flagcdn.com/w320/lk.png',
+    'bangladesh': 'https://flagcdn.com/w320/bd.png',
+  };
+  for (const [country, url] of Object.entries(countryMap)) {
+    if (lc.includes(country)) return url;
+  }
+  return '';
+}
+
+async function fetchFighterImage(fighterName, leagueId) {
+  if (!fighterName) return '';
+  const tsdbUrl = await fetchTheSportsDBPlayer(fighterName);
+  if (tsdbUrl) return tsdbUrl;
+  if (leagueId === 'ufc' || leagueId === 'boxing') {
+    try {
+      const q = encodeURIComponent(fighterName);
+      const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/mma/ufc/athletes?search=${q}&limit=1`);
+      const data = await res.json();
+      if (data.items && data.items[0] && data.items[0].headshot) return data.items[0].headshot.href;
+    } catch(e) {}
+  }
+  return '';
+}
+
+function rewriteESPNLogo(url) {
+  if (!url) return '';
+  let cleaned = url.replace(/^http:/, 'https:');
+  if (cleaned.includes('a.espncdn.com')) {
+    cleaned = cleaned.replace(/\/\d+\.png/, '/500.png');
+  }
+  return cleaned;
+}
+
+async function resolveLogo(espnLogoUrl, teamName, leagueId) {
+  console.log(`[Logo] Resolving for ${teamName} (${leagueId})`);
+
+  // 1. Manual override
+  const manual = getManualLogo(teamName);
+  if (manual) return manual;
+
+  // 2. Cache
+  const cached = getCachedLogo(teamName);
+  if (cached) {
+    console.log(`[Logo] Using cached: ${cached}`);
+    return cached;
+  }
+
+  // 3. ESPN logo (if provided)
+  if (espnLogoUrl) {
+    const rewritten = rewriteESPNLogo(espnLogoUrl);
+    console.log(`[Logo] Using ESPN: ${rewritten}`);
+    setCachedLogo(teamName, rewritten);
+    return rewritten;
+  }
+
+  // 4. Fighter image (UFC/boxing)
+  if (leagueId === 'ufc' || leagueId === 'boxing') {
+    const fighter = await fetchFighterImage(teamName, leagueId);
+    if (fighter) {
+      console.log(`[Logo] Fighter image: ${fighter}`);
+      setCachedLogo(teamName, fighter);
+      return fighter;
+    }
+  }
+
+  // 5. Cricket flag
+  if (leagueId === 'cricket') {
+    const cricket = await fetchCricketLogo(teamName);
+    if (cricket) {
+      console.log(`[Logo] Cricket flag: ${cricket}`);
+      setCachedLogo(teamName, cricket);
+      return cricket;
+    }
+  }
+
+  // 6. TheSportsDB
+  const tsdb = await fetchTheSportsDB(teamName);
+  if (tsdb) {
+    console.log(`[Logo] TheSportsDB: ${tsdb}`);
+    setCachedLogo(teamName, tsdb);
+    return tsdb;
+  }
+
+  console.log(`[Logo] No logo found for ${teamName}`);
+  return '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// BATCH ENRICHMENT
+// ═══════════════════════════════════════════════════════════
+async function enrichEventLogos(events) {
+  console.log(`[Logo] Enriching ${events.length} events...`);
+  const tasks = events.map(async (ev) => {
+    if (ev.type === 'match') {
+      console.log(`[Logo] Processing ${ev.home.name} vs ${ev.away.name} (${ev.league.id})`);
+      const [homeLogo, awayLogo] = await Promise.all([
+        resolveLogo(ev.home.logo, ev.home.name, ev.league.id),
+        resolveLogo(ev.away.logo, ev.away.name, ev.league.id)
+      ]);
+      ev.home.logo = homeLogo;
+      ev.away.logo = awayLogo;
+    }
+  });
+  await Promise.allSettled(tasks);
+  console.log('[Logo] Enrichment complete');
+}
+
+// ═══════════════════════════════════════════════════════════
+// loadImg (unchanged – uses proxy for CORS)
+// ═══════════════════════════════════════════════════════════
+async function loadImg(url, size=200) {
+  if (!url) return null;
+  if (url.startsWith('data:') || url.startsWith('blob:')) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  }
+  const proxyUrl = `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${size}&h=${size}&fit=contain&n=-1`;
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const timeout = setTimeout(() => resolve(null), 8000);
+    img.onload = () => { clearTimeout(timeout); resolve(img); };
+    img.onerror = () => { clearTimeout(timeout); resolve(null); };
+    img.src = proxyUrl;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// RACE IMAGES (simplified)
+// ═══════════════════════════════════════════════════════════
+const RACE_IMAGES = {
+  'bahrain': 'https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Bahrain_Circuit.png.transform/7col/image.png',
+  'monaco': 'https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Monaco_Circuit.png.transform/7col/image.png',
+  'silverstone': 'https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Great_Britain_Circuit.png.transform/7col/image.png',
+  'formula 1': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/1280px-F1.svg.png',
+};
+function getRaceImage(ev) {
+  if (!ev) return '';
+  const haystack = ((ev.name||'') + ' ' + (ev.venue||'')).toLowerCase();
+  for (const [key, url] of Object.entries(RACE_IMAGES)) {
+    if (haystack.includes(key)) return url;
+  }
+  return '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEAGUES (same as before – keep for UI)
+// ═══════════════════════════════════════════════════════════
+const LEAGUES = [
+  { id:'ucl', name:'Champions League', sport:'soccer', slug:'uefa.champions', icon:'🏆', type:'match' },
+  { id:'epl', name:'Premier League', sport:'soccer', slug:'eng.1', icon:'🦁', type:'match' },
+  { id:'laliga', name:'La Liga', sport:'soccer', slug:'esp.1', icon:'🇪🇸', type:'match' },
+  { id:'seriea', name:'Serie A', sport:'soccer', slug:'ita.1', icon:'🇮🇹', type:'match' },
+  { id:'bundesliga', name:'Bundesliga', sport:'soccer', slug:'ger.1', icon:'🦅', type:'match' },
+  { id:'f1', name:'Formula 1', sport:'racing', slug:'f1', icon:'🏎️', type:'race' },
+  { id:'ufc', name:'UFC / MMA', sport:'mma', slug:'ufc', icon:'🥊', type:'match' },
+  { id:'boxing', name:'Boxing', sport:'boxing', slug:null, icon:'🥋', type:'match', source:'tsdb' },
+  { id:'atp', name:'Tennis ATP', sport:'tennis', slug:'atp', icon:'🎾', type:'match' },
+  { id:'nba', name:'NBA', sport:'basketball', slug:'nba', icon:'🏀', type:'match' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// DEFAULT CHANNELS (unchanged)
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_CHANNELS = [
+  { id:'ch1', name:'ESPN', sport:'nba,nfl,ufc', region:'US', url:'' },
+  { id:'ch2', name:'Sky Sports', sport:'epl,ucl,f1', region:'UK', url:'' },
+  { id:'ch3', name:'DAZN', sport:'boxing,ufc,f1', region:'Global', url:'' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// AI PHRASES (abbreviated – keep original for full experience)
+// ═══════════════════════════════════════════════════════════
+const PHRASES = {
+  match_open: ['All eyes will be on', 'Football fans are in for a treat as', 'The stage is set for'],
+  match_context: ['Both teams arrive in good form.', 'This fixture has a history of drama.', 'The midfield battle will be key.'],
+  match_body: ['Expect a tactical battle.', 'This clash could go either way.', 'Both sides will be hungry for points.'],
+  watch_cta: ['Watch LIVE on Sports 803 — free, no sign-up required.'],
+};
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+// ═══════════════════════════════════════════════════════════
+// STATE & STORAGE (unchanged)
+// ═══════════════════════════════════════════════════════════
+let CFG = {
+  blogId:'', clientId:'', imgbbKey:'c8cd5657bfdfc6c298c9366deebfa7a7',
+  highlightsUrl: '',
+  playerBase: PLAYER_BASE_DEFAULT,
+  globalLabels: ['sports 803','live stream'],
+  activeLeagues: ['ucl','epl','laliga','seriea','bundesliga','f1','nba','ufc','atp'],
+  schedulerEnabled: false, schedTiming: 60, schedStatus: 'DRAFT',
+  autoHighlights: false,
+};
+let allEvents = [], channels = [], accessToken = null;
+let editingChannelId = null, schedulerInterval = null;
+let activeLeagueFilter = 'all';
+let postLog = {};
+
+// ═══════════════════════════════════════════════════════════
+// INIT & STORAGE FUNCTIONS (unchanged from v5 – kept for brevity)
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadStorage();
+  renderLeagueFilterPills();
+  renderLeagueToggles();
+  renderChannels();
+  renderGlobalLabels();
+  updateStatBar();
+  document.getElementById('new-label-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { addGlobalLabel(e.target.value.trim()); e.target.value = ''; }
+  });
+  document.getElementById('stream-sources-list').addEventListener('input', () => updateIframePreviewBox());
+  document.getElementById('player-base').addEventListener('input', () => updateIframePreviewBox());
+  let thumbDebounce;
+  const thumbInputIds = ['tb-home','tb-away','tb-league','tb-datetime','tb-home-logo','tb-away-logo','tb-banner','tb-bg1','tb-bg2'];
+  thumbInputIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      clearTimeout(thumbDebounce);
+      thumbDebounce = setTimeout(buildThumbnail, 600);
+    });
+  });
+});
+
+function saveStorage() {
+  localStorage.setItem(STORAGE_KEY_CFG, JSON.stringify({ data: CFG, ts: Date.now() }));
+  localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify({ data: channels, ts: Date.now() }));
+  localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify({ data: postLog, ts: Date.now() }));
+}
+function loadStorage() {
+  try { const p = JSON.parse(localStorage.getItem(STORAGE_KEY_CFG)||'{}'); if(p.data && Date.now()-p.ts < STORAGE_TTL_MS) CFG={...CFG,...p.data}; } catch(e){}
+  try { const p = JSON.parse(localStorage.getItem(STORAGE_KEY_CHANNELS)||'{}'); if(p.data && p.data.length && Date.now()-p.ts < STORAGE_TTL_MS) channels=p.data; else channels=[...DEFAULT_CHANNELS]; } catch(e){ channels=[...DEFAULT_CHANNELS]; }
+  try { const p = JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS)||'{}'); if(p.data && Date.now()-p.ts < STORAGE_TTL_MS) postLog=p.data; } catch(e){}
+  document.getElementById('cfg-blogid').value   = CFG.blogId   || '';
+  document.getElementById('cfg-clientid').value = CFG.clientId || '';
+  document.getElementById('cfg-imgbb').value    = CFG.imgbbKey || '';
+  document.getElementById('cfg-highlights-url').value = CFG.highlightsUrl || '';
+  document.getElementById('player-base').value  = CFG.playerBase || PLAYER_BASE_DEFAULT;
+  document.getElementById('post-labels').value  = (CFG.globalLabels||[]).join(', ');
+  document.getElementById('sched-timing').value = CFG.schedTiming || 60;
+  document.getElementById('sched-status').value = CFG.schedStatus || 'DRAFT';
+  document.getElementById('sched-enabled').checked  = CFG.schedulerEnabled || false;
+  document.getElementById('auto-highlights').checked = CFG.autoHighlights || false;
+  document.getElementById('sb-blogid').textContent = CFG.blogId || '(not set)';
+  document.getElementById('stat-channels').textContent = channels.length;
+  document.getElementById('stat-leagues').textContent  = CFG.activeLeagues.length;
+  const hlCount = Object.values(postLog).filter(p=>p.hasHighlights).length;
+  document.getElementById('stat-highlights').textContent = hlCount;
+}
+function saveConfig() {
+  CFG.blogId    = document.getElementById('cfg-blogid').value.trim();
+  CFG.clientId  = document.getElementById('cfg-clientid').value.trim();
+  CFG.imgbbKey  = document.getElementById('cfg-imgbb').value.trim();
+  CFG.highlightsUrl = document.getElementById('cfg-highlights-url').value.trim();
+  CFG.playerBase= document.getElementById('player-base').value.trim() || PLAYER_BASE_DEFAULT;
+  saveStorage();
+  document.getElementById('sb-blogid').textContent = CFG.blogId || '(not set)';
+  toast('Config saved ✓','success');
+}
+function clearStorage() {
+  if (!confirm('Clear all stored data?')) return;
+  [STORAGE_KEY_CFG, STORAGE_KEY_CHANNELS, STORAGE_KEY_POSTS].forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+function exportConfig() {
+  const a = document.createElement('a');
+  a.href = 'data:application/json,' + encodeURIComponent(JSON.stringify({cfg:CFG,channels,postLog},null,2));
+  a.download = 'sports803-config.json'; a.click();
+}
+function importConfig() {
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange = e => {
+    const r = new FileReader();
+    r.onload = ev => { try { const d=JSON.parse(ev.target.result); if(d.cfg) CFG={...CFG,...d.cfg}; if(d.channels) channels=d.channels; if(d.postLog) postLog=d.postLog; saveStorage(); loadStorage(); renderChannels(); toast('Config imported ✓','success'); } catch{ toast('Invalid file','error'); } };
+    r.readAsText(e.target.files[0]);
+  };
+  inp.click();
+}
+
+function openPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if (page) page.classList.add('active');
+  const link = document.querySelector(`.sidebar-nav a[onclick*="'${id}'"]`);
+  if (link) link.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEAGUE FILTER
+// ═══════════════════════════════════════════════════════════
+function renderLeagueFilterPills() {
+  const c = document.getElementById('league-filter-pills');
+  const active = LEAGUES.filter(l => CFG.activeLeagues.includes(l.id));
+  c.innerHTML = `<div class="league-pill ${activeLeagueFilter==='all'?'active':''}" onclick="setLeagueFilter('all',this)">All</div>`
+    + active.map(l => `<div class="league-pill ${activeLeagueFilter===l.id?'active':''}" onclick="setLeagueFilter('${l.id}',this)">${l.icon} ${l.name}</div>`).join('');
+}
+function setLeagueFilter(id, el) {
+  activeLeagueFilter = id;
+  document.querySelectorAll('.league-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderEventCards(allEvents);
+}
+function filterEvents() {
+  const q = document.getElementById('event-search').value.toLowerCase();
+  renderEventCards(allEvents.filter(ev => {
+    const txt = ev.type==='race' ? (ev.name+' '+ev.league.name) : (ev.home.name+' '+ev.away.name+' '+ev.league.name);
+    return txt.toLowerCase().includes(q);
+  }));
+}
+
+// ═══════════════════════════════════════════════════════════
+// FETCH EVENTS (unchanged except using new enrichEventLogos)
+// ═══════════════════════════════════════════════════════════
+async function fetchAllEvents() {
+  const spinner = document.getElementById('fetch-spinner');
+  spinner.style.display = 'inline-block';
+  allEvents = [];
+  const active = LEAGUES.filter(l => CFG.activeLeagues.includes(l.id));
+  const results = await Promise.allSettled(active.map(l => fetchLeagueEvents(l)));
+  results.forEach(r => { if (r.status==='fulfilled') allEvents.push(...r.value); });
+  spinner.style.display = 'none';
+  toast('Resolving team logos…', 'info');
+  await enrichEventLogos(allEvents);
+  renderLeagueFilterPills();
+  renderEventCards(allEvents);
+  document.getElementById('stat-events').textContent = allEvents.length;
+  toast(`Loaded ${allEvents.length} events`, 'success');
+  updateSchedQueue();
+  populateHighlightsEventSelect();
+}
+
+async function fetchLeagueEvents(league) {
+  if (league.source === 'tsdb') return fetchTSDBEvents(league);
+  try {
+    const res = await fetch(`${ESPN_BASE}/${league.sport}/${league.slug}/scoreboard`);
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    return (data.events||[]).map(ev => parseESPNEvent(ev, league));
+  } catch(e) { console.warn(`[${league.name}] ESPN failed:`, e.message); return []; }
+}
+
+function parseESPNEvent(ev, league) {
+  const comp  = ev.competitions?.[0] || {};
+  const comps = comp.competitors || [];
+  const status    = ev.status?.type?.description || 'Scheduled';
+  const startTime = ev.date ? new Date(ev.date) : null;
+
+  if (league.type === 'race') {
+    return {
+      id: ev.id, league, type:'race',
+      name:     ev.name || ev.shortName || league.name+' Race',
+      venue:    comp.venue?.fullName || '',
+      location: comp.venue?.address?.city || '',
+      entries:  comps.slice(0,5).map(c => ({
+        name:   c.athlete?.displayName || c.team?.displayName || '—',
+        number: c.athlete?.jersey || c.jersey || '',
+        logo:   c.athlete?.flag?.href || c.team?.logos?.[0]?.href || ''
+      })),
+      status, startTime, raw: ev
+    };
+  }
+
+  const home = comps.find(c=>c.homeAway==='home') || comps[0] || {};
+  const away = comps.find(c=>c.homeAway==='away') || comps[1] || {};
+  
+  const getESPNLogo = (comp) => {
+    const logos = comp.team?.logos || [];
+    const best = logos.find(l=>l.href&&l.width>=40) || logos[0];
+    return best?.href || comp.athlete?.flag?.href || '';
+  };
+  
+  return {
+    id: ev.id, league, type:'match',
+    home:{ name: home.team?.displayName||home.athlete?.displayName||'TBD', logo: getESPNLogo(home), score: home.score??'' },
+    away:{ name: away.team?.displayName||away.athlete?.displayName||'TBD', logo: getESPNLogo(away), score: away.score??'' },
+    status, startTime, raw: ev
+  };
+}
+
+async function fetchTSDBEvents(league) {
+  try {
+    const res  = await fetch(`${TSDB_BASE}/eventsseason.php?id=${league.tsdbId}`);
+    const data = await res.json();
+    const now  = new Date();
+    return (data.events||[])
+      .filter(ev => { if(!ev.strTimestamp) return false; const d=new Date(ev.strTimestamp); return d>=new Date(now-86400000)&&d<=new Date(now.getTime()+7*86400000); })
+      .map(ev => ({
+        id: ev.idEvent, league, type: league.type || 'match',
+        name: ev.strEvent || '',
+        venue: ev.strVenue || '',
+        location: ev.strCountry || '',
+        home:{ name:ev.strHomeTeam||'TBD', logo:ev.strHomeTeamBadge||'', score:ev.intHomeScore??'' },
+        away:{ name:ev.strAwayTeam||'TBD', logo:ev.strAwayTeamBadge||'', score:ev.intAwayScore??'' },
+        status: ev.strStatus||'Scheduled',
+        startTime: ev.strTimestamp ? new Date(ev.strTimestamp) : null, raw: ev
+      }));
+  } catch(e) { console.warn(`[${league.name}] TSDB failed:`, e.message); return []; }
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENT KEY + POST LOG
+// ═══════════════════════════════════════════════════════════
+function getEventKey(ev) {
+  return `${ev.league.id}|${(ev.home?.name||ev.name||'').replace(/\s/g,'_')}|${(ev.away?.name||'').replace(/\s/g,'_')}|${ev.startTime?.toDateString()||''}`;
+}
+function getPostLog(ev)       { return postLog[getEventKey(ev)] || null; }
+function setPostLog(ev, data) { postLog[getEventKey(ev)] = {...(postLog[getEventKey(ev)]||{}), ...data}; saveStorage(); }
+
+// ═══════════════════════════════════════════════════════════
+// RENDER CARDS (logoImg updated)
+// ═══════════════════════════════════════════════════════════
+function logoImg(url, teamName, cls='ec-team-logo') {
+  if (!url) {
+    const initial = teamName ? teamName[0].toUpperCase() : '?';
+    return `<div class="ec-team-placeholder" style="width:40px;height:40px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--muted)">${initial}</div>`;
+  }
+  return `<img class="${cls}" src="${url}" onerror="this.onerror=null; this.outerHTML='<div class=\"ec-team-placeholder\" style=\"width:40px;height:40px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--muted)\">${teamName?teamName[0].toUpperCase():'?'}</div>';" alt="${teamName||''}" style="width:40px;height:40px;object-fit:contain" loading="lazy">`;
+}
+
+function renderMatchCard(ev) {
+  const ts = ev.startTime ? ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'TBD';
+  const sc = ev.status==='In Progress'?'live':ev.status==='Final'?'final':'';
+  const pl = getPostLog(ev);
+  const badge = pl ? `<span class="post-badge ${pl.hasHighlights?'highlights':((pl.status||'draft').toLowerCase())}">${pl.hasHighlights?'🎬 HL':pl.status}</span>` : '';
+  const sid = encodeURIComponent(String(ev.id));
+  const isFinished = ev.status === 'Final' || ev.status === 'FT' || ev.status === 'Completed';
+  return `<div class="event-card ${pl?.hasHighlights?'has-highlights':''}" data-id="${ev.id}">
+    <div class="ec-league">
+      <span class="ec-league-name">${ev.league.icon} ${ev.league.name}</span>
+      <div style="display:flex;align-items:center;gap:5px">${badge}<span class="ec-status ${sc}">${ev.status}</span></div>
+    </div>
+    <div class="ec-match">
+      <div class="ec-team">
+        ${logoImg(ev.home.logo, ev.home.name)}
+        <div style="font-size:.75rem;margin-top:2px;text-align:center;font-weight:600">${ev.home.name}</div>
+      </div>
+      <div class="ec-score">${ev.home.score!==''?ev.home.score+' – '+ev.away.score:'vs'}</div>
+      <div class="ec-team">
+        ${logoImg(ev.away.logo, ev.away.name)}
+        <div style="font-size:.75rem;margin-top:2px;text-align:center;font-weight:600">${ev.away.name}</div>
+      </div>
+    </div>
+    <div class="ec-time">${ts}</div>
+    ${pl?.postUrl ? `<div style="font-size:.68rem;color:var(--muted)">📝 <a href="${pl.postUrl}" target="_blank">View post</a></div>` : ''}
+    <div class="ec-actions">
+      <button class="btn btn-sm" onclick="generateAndFill('${sid}')">✍️ Generate</button>
+      <button class="btn-blue btn-sm" onclick="quickPost('${sid}')">📤 Post</button>
+      ${isFinished ? `<button class="btn-orange btn-sm" onclick="openHighlightsForEvent('${sid}')">🎬 HL</button>` : ''}
+      <button class="btn-ghost btn-sm" onclick="buildThumbFromEvent('${sid}')">🖼️</button>
+    </div>
+  </div>`;
+}
+
+function renderRaceCard(ev) {
+  const ts = ev.startTime ? ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'TBD';
+  const sc = ev.status==='In Progress'?'live':ev.status==='Final'?'final':'';
+  const pl = getPostLog(ev);
+  const badge = pl ? `<span class="post-badge ${pl.hasHighlights?'highlights':((pl.status||'draft').toLowerCase())}">${pl.hasHighlights?'🎬 HL':pl.status}</span>` : '';
+  const sid = encodeURIComponent(String(ev.id));
+  const isFinished = ev.status === 'Final' || ev.status === 'Official' || ev.status === 'Completed';
+  const raceImg = getRaceImage(ev);
+  const entriesHtml = ev.entries?.length
+    ? ev.entries.map((e,i)=>`<div class="ec-race-entry">
+        <span class="ec-race-pos">P${i+1}</span>
+        ${e.logo ? `<img src="${proxyUrl(e.logo,36)}" onerror="this.style.display='none'" style="width:18px;height:18px;object-fit:contain" alt="">` : ''}
+        <span>${e.name}${e.number?` <span style="color:var(--muted)">#${e.number}</span>`:''}</span>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:.74rem;font-style:italic">Grid TBA</div>';
+  return `<div class="event-card ${pl?.hasHighlights?'has-highlights':''}" data-id="${ev.id}">
+    <div class="ec-league">
+      <span class="ec-league-name">${ev.league.icon} ${ev.league.name}</span>
+      <div style="display:flex;align-items:center;gap:5px">${badge}<span class="ec-status ${sc}">${ev.status}</span></div>
+    </div>
+    ${raceImg ? `<img src="${proxyUrl(raceImg,800)}" class="ec-event-img" onerror="this.src='${raceImg}'" alt="${ev.name}" loading="lazy">` : ''}
+    <div>
+      <div class="ec-race-title">${ev.name}</div>
+      ${ev.venue?`<div class="ec-race-venue">🏟 ${ev.venue}${ev.location?', '+ev.location:''}</div>`:''}
+      <div class="ec-race-venue">🕐 ${ts}</div>
+    </div>
+    <div class="ec-race-entries">${entriesHtml}</div>
+    ${pl?.postUrl ? `<div style="font-size:.68rem;color:var(--muted)">📝 <a href="${pl.postUrl}" target="_blank">View post</a></div>` : ''}
+    <div class="ec-actions">
+      <button class="btn btn-sm" onclick="generateAndFill('${sid}')">✍️ Generate</button>
+      <button class="btn-blue btn-sm" onclick="quickPost('${sid}')">📤 Post</button>
+      ${isFinished ? `<button class="btn-orange btn-sm" onclick="openHighlightsForEvent('${sid}')">🎬 HL</button>` : ''}
+    </div>
+  </div>`;
+}
+function proxyUrl(url, size=200) {
+  if (!url) return '';
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${size}&h=${size}&fit=contain&n=-1`;
+}
+function renderEventCards(events) {
+  const grid = document.getElementById('events-grid');
+  const filtered = activeLeagueFilter==='all' ? events : events.filter(e=>e.league.id===activeLeagueFilter);
+  if (!filtered.length) { grid.innerHTML='<div style="color:var(--muted);grid-column:1/-1;padding:40px;text-align:center">No events found.</div>'; return; }
+  grid.innerHTML = filtered.map(ev => ev.type==='race' ? renderRaceCard(ev) : renderMatchCard(ev)).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// GENERATE & POST (simplified but functional)
+// ═══════════════════════════════════════════════════════════
+function generateAndFill(sid) {
+  const ev = findEvent(sid); if(!ev) return;
+  const title = ev.type==='race' ? `${ev.name} – Race Preview` : `${ev.home.name} vs ${ev.away.name} – ${ev.league.name} Preview`;
+  document.getElementById('post-title').value = title;
+  document.getElementById('post-body').value = buildArticle(title, ev);
+  openPage('compose');
+  toast('Content generated!','success');
+}
+function findEvent(sid) { return allEvents.find(e => String(e.id) === String(decodeURIComponent(sid))); }
+function buildArticle(title, ev) {
+  const player = CFG.playerBase || PLAYER_BASE_DEFAULT;
+  const home = ev ? ev.home.name : 'Home Team';
+  const away = ev ? ev.away.name : 'Away Team';
+  const league = ev ? ev.league.name : "today's fixture";
+  const ts = ev?.startTime ? ev.startTime.toLocaleString() : 'today';
+  const chs = ev ? findChannelsForLeague(ev.league.id) : [];
+  const chList = chs.length ? chs.map(c=>c.name).join(', ') : 'Sports 803';
+  return `${pick(PHRASES.match_open)} ${home} vs ${away} in the ${league}.\n\n${pick(PHRASES.match_context)}\n\n${pick(PHRASES.match_body)}\n\n📅 Date & Time: ${ts}\n🏆 Competition: ${league}\n\n📺 Watch Live on ${chList} or on Sports 803: ${player}\n\n${pick(PHRASES.watch_cta)}`;
+}
+function addStreamSource() {
+  const list = document.getElementById('stream-sources-list');
+  const row = document.createElement('div');
+  row.className='stream-source-row';
+  row.innerHTML=`<input type="text" placeholder="https://stream-source.com/…" class="mora-input"><button class="btn-ghost btn-sm" onclick="removeStreamSource(this)">✕</button>`;
+  list.appendChild(row);
+  updateIframePreviewBox();
+}
+function removeStreamSource(btn) {
+  const list = document.getElementById('stream-sources-list');
+  if (list.children.length<=1){btn.previousElementSibling.value='';return;}
+  btn.parentElement.remove();
+  updateIframePreviewBox();
+}
+function getMoraUrls() { return Array.from(document.querySelectorAll('.mora-input')).map(i=>i.value.trim()).filter(Boolean); }
+function buildIframeHtml(moraUrls) {
+  const base = (document.getElementById('player-base')?.value||CFG.playerBase||PLAYER_BASE_DEFAULT).trim();
+  const params = moraUrls.map(u=>`mora=${encodeURIComponent(u)}`).join('&');
+  const src = params ? `${base}?${params}` : base;
+  return `<div style="margin:18px 0;"><iframe loading="lazy" width="100%" height="500" src="${src}" frameborder="0" scrolling="no" allowfullscreen></iframe></div>`;
+}
+function updateIframePreviewBox() {
+  const urls=getMoraUrls();
+  const box=document.getElementById('iframe-preview-box');
+  if (!urls.length){box.textContent='Add a stream URL above to preview…';return;}
+  box.textContent=buildIframeHtml(urls);
+}
+function buildAndInsertIframe() {
+  const urls=getMoraUrls();
+  if (!urls.length){toast('Add at least one stream URL','info');return;}
+  const code=buildIframeHtml(urls);
+  const body=document.getElementById('post-body');
+  body.value+=(body.value?'\n\n':'')+code;
+  toast('iframe inserted ✓','success');
+}
+function previewIframe() {
+  const urls=getMoraUrls();
+  if (!urls.length){toast('Add at least one stream URL','info');return;}
+  document.getElementById('iframe-preview-render').innerHTML=buildIframeHtml(urls);
+  openModal('modal-iframe-preview');
+}
+function populateHighlightsEventSelect() {
+  const sel = document.getElementById('hl-event-select');
+  sel.innerHTML = '<option value="">— choose event —</option>' + allEvents.map((ev,i) => `<option value="${i}">${ev.league.icon} ${ev.type==='race'?ev.name:`${ev.home.name} vs ${ev.away.name}`}</option>`).join('');
+}
+function openHighlightsModal() {
+  populateHighlightsEventSelect();
+  document.getElementById('hl-body').value='';
+  document.getElementById('hl-video-url').value='';
+  document.getElementById('hl-existing-post').style.display='none';
+  openModal('modal-highlights');
+}
+function openHighlightsForEvent(sid) {
+  populateHighlightsEventSelect();
+  const idx = allEvents.findIndex(e => String(e.id) === String(decodeURIComponent(sid)));
+  if (idx > -1) document.getElementById('hl-event-select').value = idx;
+  document.getElementById('hl-body').value='';
+  document.getElementById('hl-video-url').value='';
+  onHighlightEventChange();
+  openModal('modal-highlights');
+}
+function onHighlightEventChange() {
+  const idx = parseInt(document.getElementById('hl-event-select').value);
+  if (isNaN(idx)||idx<0) { document.getElementById('hl-existing-post').style.display='none'; return; }
+  const ev = allEvents[idx]; if(!ev) return;
+  const pl = getPostLog(ev);
+  const exDiv = document.getElementById('hl-existing-post');
+  if (pl?.postId) { exDiv.style.display='flex'; document.getElementById('hl-post-link').href=pl.postUrl||'#'; }
+  else exDiv.style.display='none';
+}
+function generateHighlightsText() {
+  const idx = parseInt(document.getElementById('hl-event-select').value);
+  if (isNaN(idx)) { toast('Select an event first','info'); return; }
+  const ev = allEvents[idx]; if(!ev) return;
+  document.getElementById('hl-body').value = `Highlights of ${ev.type==='race'?ev.name:`${ev.home.name} vs ${ev.away.name}`} – coming soon.`;
+  toast('Highlights text generated ✓','success');
+}
+async function postHighlights() {
+  const idx = parseInt(document.getElementById('hl-event-select').value);
+  if (isNaN(idx)) { toast('Select an event','info'); return; }
+  const ev = allEvents[idx]; if(!ev) return;
+  const hlBody = document.getElementById('hl-body').value.trim();
+  const hlVideo = document.getElementById('hl-video-url').value.trim();
+  if (!hlBody) { toast('Generate or write highlights text first','info'); return; }
+  if (!accessToken) { toast('Sign in first','error'); return; }
+  if (!CFG.blogId) { toast('Enter Blog ID in Settings','error'); return; }
+  const title = `${ev.type==='race'?ev.name:`${ev.home.name} vs ${ev.away.name}`} – Highlights`;
+  const pl = getPostLog(ev);
+  const iframeHtml = hlVideo ? buildIframeHtml([hlVideo]) : '';
+  const htmlBody = (hlBody + (iframeHtml ? '\n\n'+iframeHtml : '')).replace(/\n/g,'<br>');
+  if (pl?.postId) {
+    try {
+      const res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${CFG.blogId}/posts/${pl.postId}`,{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({kind:'blogger#post',id:pl.postId,blog:{id:CFG.blogId},title,content:htmlBody,labels:['highlights','sports 803']})});
+      if(!res.ok) throw new Error(`Update ${res.status}`);
+      const post = await res.json();
+      setPostLog(ev,{postId:post.id,postUrl:post.url,status:post.status,title,hasHighlights:true});
+      toast('Post updated with highlights ✓','success');
+      closeModal('modal-highlights'); renderEventCards(allEvents); updateHighlightsStat();
+    } catch(e){toast('Update failed: '+e.message,'error');}
+  } else {
+    const post = await postToBloggerRaw(title, htmlBody, 'LIVE', ['highlights','sports 803']);
+    if (post) {
+      setPostLog(ev,{postId:post.id,postUrl:post.url,status:'LIVE',title,hasHighlights:true});
+      toast('Highlights posted ✓','success');
+      closeModal('modal-highlights'); renderEventCards(allEvents); updateHighlightsStat();
+    }
+  }
+}
+async function checkHighlights() {
+  const toHL = allEvents.filter(ev => {
+    const fin = ev.status==='Final'||ev.status==='FT'||ev.status==='Completed';
+    const pl = getPostLog(ev);
+    return fin&&pl?.postId&&!pl.hasHighlights;
+  });
+  if (!toHL.length) { toast('No finished events pending highlights','info'); return; }
+  toast(`${toHL.length} event(s) ready for highlights…`,'info');
+  populateHighlightsEventSelect();
+  const firstIdx = allEvents.findIndex(ev=>ev.id===toHL[0].id);
+  if (firstIdx>-1) document.getElementById('hl-event-select').value=firstIdx;
+  onHighlightEventChange();
+  openModal('modal-highlights');
+}
+function updateHighlightsStat() {
+  document.getElementById('stat-highlights').textContent = Object.values(postLog).filter(p=>p.hasHighlights).length;
+}
+function handleAuth() {
+  if (accessToken) { signOut(); return; }
+  if (!CFG.clientId) { toast('Enter OAuth Client ID in Settings first','error'); return; }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: CFG.clientId,
+    scope: 'https://www.googleapis.com/auth/blogger',
+    callback: resp => {
+      if (resp.error) { toast('Auth error: '+resp.error,'error'); return; }
+      accessToken = resp.access_token;
+      document.getElementById('auth-status').textContent='🟢 Signed in';
+      document.getElementById('auth-btn').textContent='Sign out';
+      toast('Signed in ✓','success');
+    }
+  });
+  client.requestAccessToken();
+}
+function signOut() {
+  if (accessToken) google.accounts.oauth2.revoke(accessToken,()=>{});
+  accessToken=null;
+  document.getElementById('auth-status').textContent='⚪ Not signed in';
+  document.getElementById('auth-btn').textContent='Sign in with Google';
+  toast('Signed out','info');
+}
+async function postToBlogger() {
+  if (!accessToken){toast('Sign in first','error');return null;}
+  if (!CFG.blogId) {toast('Enter Blog ID in Settings','error');return null;}
+  const t = document.getElementById('post-title').value.trim();
+  const b = document.getElementById('post-body').value.trim();
+  const st = document.getElementById('post-status').value;
+  const labelsRaw = document.getElementById('post-labels').value;
+  const labels = labelsRaw.split(',').map(s=>s.trim()).filter(Boolean);
+  if (!t||!b){toast('Title and body required','error');return null;}
+  const thumbUrl = document.getElementById('thumb-url').value.trim();
+  const html = (thumbUrl?`<div><img src="${thumbUrl}" style="max-width:100%"></div>\n`:'') + b.replace(/\n/g,'<br>');
+  return postToBloggerRaw(t, html, st, labels);
+}
+async function postToBloggerRaw(title, htmlBody, status, labels) {
+  let url = `https://www.googleapis.com/blogger/v3/blogs/${CFG.blogId}/posts/`;
+  if (status==='DRAFT'||status==='SCHEDULED') url+='?isDraft=true';
+  const payload = {kind:'blogger#post',blog:{id:CFG.blogId},title,content:htmlBody,labels:labels||['sports 803','live stream']};
+  if (status==='SCHEDULED') {
+    const schedTime = document.getElementById('post-schedule-time')?.value;
+    if (schedTime) payload.published = new Date(schedTime).toISOString();
+  }
+  try {
+    const res = await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if (!res.ok) throw new Error(`Blogger ${res.status}`);
+    const post = await res.json();
+    toast(`Posted: "${title}" (${status}) ✓`,'success');
+    addRecentPost(title, post.url, status);
+    return post;
+  } catch(e){toast('Post failed: '+e.message,'error');return null;}
+}
+async function quickPost(sid) {
+  const ev = findEvent(sid); if(!ev) return;
+  const title = ev.type==='race' ? `${ev.name} – Race Preview` : `${ev.home.name} vs ${ev.away.name} – Preview`;
+  const body = buildArticle(title, ev);
+  const html = body.replace(/\n/g,'<br>');
+  const post = await postToBloggerRaw(title, html, CFG.schedStatus||'DRAFT', ['sports 803','live stream']);
+  if (post) {
+    setPostLog(ev,{postId:post.id,postUrl:post.url,status:post.status||'DRAFT',title});
+    renderEventCards(allEvents);
+    document.getElementById('stat-posted').textContent=parseInt(document.getElementById('stat-posted').textContent||0)+1;
+  }
+}
+async function bulkPostAll() {
+  if (!accessToken){toast('Sign in first','error');return;}
+  const toPost=allEvents.filter(ev=>!getPostLog(ev));
+  if (!toPost.length){toast('All events already posted','info');return;}
+  toast(`Bulk posting ${toPost.length} events…`,'info');
+  let n=0;
+  for (const ev of toPost){await quickPost(encodeURIComponent(String(ev.id)));n++;await new Promise(r=>setTimeout(r,800));}
+  toast(`Done: ${n} posts made`,'success');
+}
+function addRecentPost(title, url, status) {
+  const list=document.getElementById('recent-posts-list');
+  if(list.textContent.includes('No posts'))list.innerHTML='';
+  const div=document.createElement('div');
+  div.style.cssText='padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px';
+  div.innerHTML=`<span class="post-badge ${(status||'').toLowerCase()}">${status}</span><span style="flex:1;font-size:.82rem">${title}</span>${url?`<a href="${url}" target="_blank" style="font-size:.72rem">View</a>`:''}`;
+  list.prepend(div);
+  document.getElementById('stat-posted').textContent=parseInt(document.getElementById('stat-posted').textContent||0)+1;
+}
+function previewPost() {
+  document.getElementById('preview-title').textContent=document.getElementById('post-title').value;
+  document.getElementById('preview-body').innerHTML=document.getElementById('post-body').value.replace(/\n/g,'<br>');
+  openModal('modal-preview');
+}
+function renderChannels(filter='') {
+  const tbody=document.getElementById('channels-tbody');
+  const list=channels.filter(c=>!filter||[c.name,c.sport,c.region].some(f=>f.toLowerCase().includes(filter)));
+  tbody.innerHTML=list.map(c=>`
+      <tr><td><strong>${c.name}</strong></td><td>${c.sport}</td>
+      <td>${c.url?`<a href="${c.url}" target="_blank">${c.url.substring(0,38)}…</a>`:'—'}</td>
+      <td>${c.region}</td>
+      <td><button class="btn-ghost btn-sm" onclick="editChannel('${c.id}')">✏️</button><button class="btn btn-sm" style="background:#3d0c0c" onclick="deleteChannel('${c.id}')">✕</button></td></tr>
+    `).join('') || `<tr><td colspan="5" style="text-align:center">No channels.</td></tr>`;
+  document.getElementById('stat-channels').textContent=channels.length;
+}
+function filterChannels(){renderChannels(document.getElementById('ch-search').value.toLowerCase());}
+function openAddChannel(){editingChannelId=null;document.getElementById('modal-channel-title').textContent='Add Channel';['ch-name','ch-region','ch-sport','ch-url'].forEach(id=>document.getElementById(id).value='');openModal('modal-channel');}
+function editChannel(id){
+  const ch=channels.find(c=>c.id===id);if(!ch)return;
+  editingChannelId=id;document.getElementById('modal-channel-title').textContent='Edit Channel';
+  document.getElementById('ch-name').value=ch.name;document.getElementById('ch-region').value=ch.region;
+  document.getElementById('ch-sport').value=ch.sport;document.getElementById('ch-url').value=ch.url;
+  openModal('modal-channel');
+}
+function saveChannel(){
+  const name=document.getElementById('ch-name').value.trim();
+  if(!name){toast('Name required','error');return;}
+  const obj={name,region:document.getElementById('ch-region').value.trim(),sport:document.getElementById('ch-sport').value.trim(),url:document.getElementById('ch-url').value.trim()};
+  if(editingChannelId){const i=channels.findIndex(c=>c.id===editingChannelId);if(i>-1)channels[i]={...channels[i],...obj};}
+  else channels.push({id:'ch'+Date.now(),...obj});
+  saveStorage();renderChannels();closeModal('modal-channel');toast('Channel saved ✓','success');
+}
+function deleteChannel(id){if(!confirm('Delete?'))return;channels=channels.filter(c=>c.id!==id);saveStorage();renderChannels();toast('Deleted','info');}
+function findChannelsForLeague(leagueId){return channels.filter(c=>c.sport.split(',').map(s=>s.trim()).some(s=>s===leagueId||leagueId.includes(s)||s.includes(leagueId)));}
+function toggleScheduler(){
+  CFG.schedulerEnabled=document.getElementById('sched-enabled').checked;
+  CFG.schedTiming=parseInt(document.getElementById('sched-timing').value);
+  CFG.schedStatus=document.getElementById('sched-status').value;
+  CFG.autoHighlights=document.getElementById('auto-highlights').checked;
+  saveStorage();
+  if(CFG.schedulerEnabled){runScheduler();toast('Scheduler enabled ✓','success');}
+  else{clearInterval(schedulerInterval);toast('Scheduler disabled','info');}
+}
+function runScheduler(){
+  clearInterval(schedulerInterval);
+  schedulerInterval=setInterval(async()=>{
+    const now=Date.now(),offset=(CFG.schedTiming||60)*60000;
+    for(const ev of allEvents){
+      if(!ev.startTime)continue;
+      const pl=getPostLog(ev);
+      const diff=ev.startTime.getTime()-now;
+      if(!pl?.postId&&diff>0&&diff<=offset){await quickPost(encodeURIComponent(String(ev.id)));await new Promise(r=>setTimeout(r,1000));}
+    }
+    updateSchedQueue();
+  },60000);
+  updateSchedQueue();
+}
+function updateSchedQueue(){
+  const c=document.getElementById('sched-queue'),now=Date.now(),offset=(CFG.schedTiming||60)*60000*24;
+  const pending=allEvents.filter(ev=>ev.startTime&&!getPostLog(ev)?.postId&&ev.startTime.getTime()-now>0&&ev.startTime.getTime()-now<=offset);
+  if(!pending.length){c.innerHTML='<span style="color:var(--muted)">No events in scheduling window.</span>';return;}
+  c.innerHTML=pending.map(ev=>`<div>${ev.league.icon} ${ev.type==='race'?ev.name:`${ev.home.name} vs ${ev.away.name}`} — ${ev.startTime.toLocaleString()}</div>`).join('');
+  document.getElementById('stat-scheduled').textContent=pending.length;
+}
+function renderLeagueToggles(){
+  const c=document.getElementById('league-toggles');
+  c.innerHTML=LEAGUES.map(l=>`<label class="toggle"><input type="checkbox" ${CFG.activeLeagues.includes(l.id)?'checked':''} onchange="toggleActiveLeague('${l.id}',this.checked)"><div class="toggle-slider"></div><span>${l.icon} ${l.name}</span></label>`).join('');
+}
+function toggleActiveLeague(id,on){
+  if(on){if(!CFG.activeLeagues.includes(id))CFG.activeLeagues.push(id);}
+  else CFG.activeLeagues=CFG.activeLeagues.filter(x=>x!==id);
+  saveStorage();renderLeagueFilterPills();
+  document.getElementById('stat-leagues').textContent=CFG.activeLeagues.length;
+}
+function renderGlobalLabels(){
+  const c=document.getElementById('global-labels-tags');
+  c.innerHTML=(CFG.globalLabels||[]).map((l,i)=>`<div class="tag">${l}<span class="remove" onclick="removeLabel(${i})">✕</span></div>`).join('');
+}
+function addGlobalLabel(l){if(!l||CFG.globalLabels.includes(l))return;CFG.globalLabels.push(l);document.getElementById('post-labels').value=CFG.globalLabels.join(', ');renderGlobalLabels();}
+function removeLabel(i){CFG.globalLabels.splice(i,1);renderGlobalLabels();}
+function drawMatchThumb(cv, opts) {
+  const {home,away,hLogo,aLogo,league,datetime,bg1,bg2} = opts;
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  ctx.fillStyle=bg1; ctx.fillRect(0,0,cx,H);
+  ctx.fillStyle=bg2; ctx.fillRect(cx,0,cx,H);
+  ctx.fillStyle='#000'; ctx.globalAlpha=0.5;
+  ctx.beginPath(); ctx.moveTo(cx-14,0); ctx.lineTo(cx+14,0); ctx.lineTo(cx-14,H); ctx.lineTo(cx-38,H); ctx.fill();
+  ctx.globalAlpha=1;
+  const crestR=110; const hCx=W*0.26, aCx=W*0.74, crestCy=H*0.44;
+  function drawCrest(img, cx, cy, r) {
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+    if(img) ctx.drawImage(img,cx-r,cy-r,r*2,r*2);
+    else { ctx.fillStyle='rgba(255,255,255,0.07)'; ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 40px sans-serif'; ctx.fillText('?',cx,cy); }
+    ctx.restore();
+  }
+  Promise.all([loadImg(hLogo,300), loadImg(aLogo,300)]).then(([hImg,aImg])=>{
+    drawCrest(hImg, hCx, crestCy, crestR);
+    drawCrest(aImg, aCx, crestCy, crestR);
+    ctx.fillStyle='#e63946'; ctx.beginPath(); ctx.arc(cx,cy*0.96,30,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font='900 16px sans-serif'; ctx.fillText('VS',cx,cy*0.96);
+    ctx.fillStyle='#fff'; ctx.font='800 22px sans-serif'; ctx.fillText(home, hCx, crestCy+crestR+20);
+    ctx.fillText(away, aCx, crestCy+crestR+20);
+    if(datetime){ ctx.font='600 13px sans-serif'; ctx.fillStyle='rgba(255,255,255,0.65)'; ctx.fillText(datetime, cx, H-16); }
+  });
+}
+async function drawRaceThumb(cv, opts) {
+  const {name,league,datetime,venue,bg1,bg2,bannerUrl} = opts;
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  ctx.fillStyle=bg1; ctx.fillRect(0,0,W,H);
+  const bgImg = await loadImg(bannerUrl, 800);
+  if(bgImg){ ctx.drawImage(bgImg, W*0.35, 0, W*0.65, H); ctx.fillStyle='rgba(10,14,26,0.5)'; ctx.fillRect(0,0,W,H); }
+  ctx.fillStyle='#e63946'; ctx.fillRect(32, H*0.12, 6, H*0.76);
+  ctx.fillStyle='#fff'; ctx.font='800 30px sans-serif'; ctx.fillText(name, 48, H*0.28);
+  if(datetime){ ctx.font='700 15px sans-serif'; ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.fillText(datetime, 48, H*0.72); }
+}
+function buildThumbnail(){
+  const home=document.getElementById('tb-home').value||'Event';
+  const away=document.getElementById('tb-away').value||'';
+  const lg=document.getElementById('tb-league').value||'';
+  const dt=document.getElementById('tb-datetime').value||'';
+  const bg1=document.getElementById('tb-bg1').value;
+  const bg2=document.getElementById('tb-bg2').value;
+  const banner=document.getElementById('tb-banner').value.trim();
+  const hLogo=document.getElementById('tb-home-logo').value.trim();
+  const aLogo=document.getElementById('tb-away-logo').value.trim();
+  const cv=document.getElementById('thumb-canvas-big');
+  if(away){
+    drawMatchThumb(cv,{home,away,hLogo,aLogo,league:lg,datetime:dt,bg1,bg2});
+  } else {
+    drawRaceThumb(cv,{name:home,league:lg,datetime:dt,venue:'',bg1,bg2,bannerUrl:banner});
+  }
+}
+async function generateThumbnail(){
+  const title=document.getElementById('post-title').value;
+  const cv=document.getElementById('thumb-canvas');
+  const parts=title.split(/\s+vs\s+/i);
+  if(parts.length>=2){
+    await drawMatchThumb(cv,{home:parts[0],away:parts[1].split('–')[0],hLogo:'',aLogo:'',league:'',datetime:'',bg1:'#0d1b2a',bg2:'#1a0020'});
+  } else {
+    await drawRaceThumb(cv,{name:title,league:'',datetime:'',venue:'',bg1:'#0a0e1a',bg2:'#1a0010',bannerUrl:''});
+  }
+}
+async function buildThumbFromEvent(sid){
+  const ev=findEvent(sid);if(!ev)return;
+  const dt=ev.startTime?ev.startTime.toLocaleString():'';
+  if(ev.type==='race'){
+    document.getElementById('tb-home').value=ev.name;
+    document.getElementById('tb-away').value='';
+    document.getElementById('tb-league').value=ev.league.name;
+    document.getElementById('tb-home-logo').value='';
+    document.getElementById('tb-away-logo').value='';
+    document.getElementById('tb-banner').value=getRaceImage(ev);
+    document.getElementById('tb-datetime').value=dt;
+    openPage('thumbnail');
+    await drawRaceThumb(document.getElementById('thumb-canvas-big'),{
+      name:ev.name,league:ev.league.name,datetime:dt,venue:ev.venue||'',bg1:'#0a0e1a',bg2:'#1a0a00',bannerUrl:getRaceImage(ev)
+    });
+  } else {
+    document.getElementById('tb-home').value=ev.home.name;
+    document.getElementById('tb-away').value=ev.away.name;
+    document.getElementById('tb-league').value=ev.league.name;
+    document.getElementById('tb-home-logo').value=ev.home.logo;
+    document.getElementById('tb-away-logo').value=ev.away.logo;
+    document.getElementById('tb-banner').value='';
+    document.getElementById('tb-datetime').value=dt;
+    openPage('thumbnail');
+    await drawMatchThumb(document.getElementById('thumb-canvas-big'),{
+      home:ev.home.name,away:ev.away.name,
+      hLogo:ev.home.logo,aLogo:ev.away.logo,
+      league:ev.league.name,datetime:dt,
+      bg1:'#0d1b2a',bg2:'#1a0020'
+    });
+  }
+}
+async function uploadToImgbb(){await doImgbbUpload('thumb-canvas','thumb-url');}
+async function uploadThumbFromBuilder(){await doImgbbUpload('thumb-canvas-big','tb-imgbb-url');}
+async function doImgbbUpload(cvId,outId){
+  const key=CFG.imgbbKey;if(!key){toast('imgbb key missing','error');return;}
+  const base64=document.getElementById(cvId).toDataURL('image/jpeg',.92).split(',')[1];
+  try{
+    const fd=new FormData();fd.append('key',key);fd.append('image',base64);
+    const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});
+    const d=await res.json();
+    if(d.success){document.getElementById(outId).value=d.data.url;toast('Uploaded ✓','success');}
+    else throw new Error(d.error?.message);
+  }catch(e){toast('imgbb error: '+e.message,'error');}
+}
+function downloadThumb(){
+  const a=document.createElement('a');a.download='sports803-thumb.jpg';
+  a.href=document.getElementById('thumb-canvas-big').toDataURL('image/jpeg',.92);a.click();
+}
+function updateStatBar(){
+  document.getElementById('stat-leagues').textContent=CFG.activeLeagues.length;
+  document.getElementById('stat-channels').textContent=channels.length;
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function toast(msg,type='info'){
+  const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+</script>
+</body>
+</html>
