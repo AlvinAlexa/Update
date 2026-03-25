@@ -354,8 +354,10 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
 <div class="page" id="page-events">
   <div class="page-header">
     <div class="page-title">Live <span>Events</span></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn" onclick="fetchAllEvents()"><span id="fetch-spinner" style="display:none" class="spinner"></span>🔄 Fetch All</button>
+<div style="display:flex;align-items:center;gap:6px">
+  <label style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0">Target Date</label>
+  <input type="date" id="target-date" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:.75rem;width:145px">
+</div>      <button class="btn" onclick="fetchAllEvents()"><span id="fetch-spinner" style="display:none" class="spinner"></span>🔄 Fetch All</button>
       <button class="btn-orange" onclick="checkHighlights()">🎬 Post Highlights</button>
       <button class="btn-green" onclick="bulkPostAll()">📤 Bulk Post All</button>
     </div>
@@ -389,13 +391,34 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
 ```
     <!-- SEO Meter -->
     <div class="seo-meter">
-      <div class="seo-meter-title">SEO Score</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Title Length</div><div class="seo-bar"><div class="seo-fill" id="seo-title-bar" style="width:0%"></div></div><div class="seo-score" id="seo-title-score" style="color:var(--muted)">0%</div></div>
-        <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Word Count</div><div class="seo-bar"><div class="seo-fill" id="seo-words-bar" style="width:0%"></div></div><div class="seo-score" id="seo-words-score" style="color:var(--muted)">0 words</div></div>
-        <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Labels</div><div class="seo-bar"><div class="seo-fill" id="seo-labels-bar" style="width:0%"></div></div><div class="seo-score" id="seo-labels-score" style="color:var(--muted)">0</div></div>
-      </div>
-    </div>
+  <div class="seo-meter-title">SEO Score</div>
+
+  <!-- Target Keyword input -->
+  <div style="margin-bottom:10px">
+    <label>Target Keyword</label>
+    <input type="text" id="seo-keyword" placeholder="e.g. Premier League live stream" oninput="updateSEOMeter()" style="margin-top:3px">
+  </div>
+
+  <!-- Meta Description -->
+  <div style="margin-bottom:10px">
+    <label>Meta Description <span id="meta-char-count" style="color:var(--muted2);font-weight:400">(0/160)</span></label>
+    <textarea id="seo-meta-desc" rows="2" maxlength="160" placeholder="Max 160 characters…" oninput="updateSEOMeter()" style="margin-top:3px;resize:none"></textarea>
+    <div class="seo-bar" style="margin-top:4px"><div class="seo-fill" id="seo-meta-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- Existing 3 meters -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+    <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Title Length</div><div class="seo-bar"><div class="seo-fill" id="seo-title-bar" style="width:0%"></div></div><div class="seo-score" id="seo-title-score" style="color:var(--muted)">0%</div></div>
+    <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Word Count</div><div class="seo-bar"><div class="seo-fill" id="seo-words-bar" style="width:0%"></div></div><div class="seo-score" id="seo-words-score" style="color:var(--muted)">0 words</div></div>
+    <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Labels</div><div class="seo-bar"><div class="seo-fill" id="seo-labels-bar" style="width:0%"></div></div><div class="seo-score" id="seo-labels-score" style="color:var(--muted)">0</div></div>
+  </div>
+
+  <!-- New metrics row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Keyword Density</div><div class="seo-bar"><div class="seo-fill" id="seo-kw-bar" style="width:0%;background:linear-gradient(90deg,var(--accent2),var(--gold))"></div></div><div class="seo-score" id="seo-kw-score" style="color:var(--muted)">—</div></div>
+    <div><div style="font-size:.65rem;color:var(--muted);margin-bottom:3px">Image Alt-Text</div><div class="seo-bar"><div class="seo-fill" id="seo-alt-bar" style="width:0%;background:linear-gradient(90deg,var(--purple),var(--blue))"></div></div><div class="seo-score" id="seo-alt-score" style="color:var(--muted)">—</div></div>
+  </div>
+</div>
 
     <div class="form-group"><label>Post Body</label><textarea id="post-body" rows="16" placeholder="Article content…" oninput="updateSEOMeter()"></textarea></div>
     <div class="form-row">
@@ -1366,6 +1389,37 @@ function updateSEOMeter() {
   document.getElementById('seo-labels-bar').style.width   = lPct + '%';
   document.getElementById('seo-labels-score').textContent = `${labels}`;
   document.getElementById('seo-labels-score').style.color = lPct > 60 ? 'var(--green)' : lPct > 30 ? 'var(--accent2)' : 'var(--accent)';
+ // Keyword density
+  const kw = (document.getElementById('seo-keyword')?.value||'').trim().toLowerCase();
+  if (kw && body) {
+    const bodyLow = body.toLowerCase();
+    const firstPara = bodyLow.split('\n')[0];
+    const count = (bodyLow.match(new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length;
+    const density = words > 0 ? ((count / words)*100).toFixed(1) : 0;
+    const inFirst = firstPara.includes(kw);
+    const kwPct = Math.min(100, density * 33);
+    document.getElementById('seo-kw-bar').style.width = kwPct+'%';
+    document.getElementById('seo-kw-score').textContent = `${density}% (${count}x)${inFirst?' ✓':''}`;
+    document.getElementById('seo-kw-score').style.color = density>=0.5&&density<=2.5?'var(--green)':density>0?'var(--accent2)':'var(--accent)';
+  } else {
+    document.getElementById('seo-kw-score').textContent = kw?'No matches':'No keyword';
+  }
+
+  // Meta description meter
+  const meta = document.getElementById('seo-meta-desc')?.value||'';
+  const metaLen = meta.length;
+  document.getElementById('meta-char-count').textContent = `(${metaLen}/160)`;
+  const metaPct = Math.min(100,(metaLen/160)*100);
+  document.getElementById('seo-meta-bar').style.width = metaPct+'%';
+  document.getElementById('seo-meta-bar').style.background = metaLen>=120&&metaLen<=160?'var(--green)':metaLen>80?'var(--accent2)':'var(--accent)';
+
+  // Image alt-text check
+  const imgTags = body.match(/<img[^>]*>/gi)||[];
+  const missingAlt = imgTags.filter(t=>!t.includes('alt="')||t.includes('alt=""')).length;
+  const altPct = imgTags.length ? Math.round(((imgTags.length-missingAlt)/imgTags.length)*100) : 100;
+  document.getElementById('seo-alt-bar').style.width = altPct+'%';
+  document.getElementById('seo-alt-score').textContent = imgTags.length ? `${imgTags.length-missingAlt}/${imgTags.length} OK${missingAlt?` ⚠${missingAlt} missing`:''}` : 'No images';
+  document.getElementById('seo-alt-score').style.color = missingAlt?'var(--accent)':'var(--green)';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1584,7 +1638,7 @@ async function fetchAllEvents() {
 async function fetchLeagueEvents(league) {
   if (league.source==='tsdb') return fetchTSDBEvents(league);
   try {
-    const res = await fetch(`${ESPN_BASE}/${league.sport}/${league.slug}/scoreboard`);
+    const targetDate = document.getElementById('target-date').value; const dateParam = targetDate ? `?dates=${targetDate.replace(/-/g,'')}` : ''; const res = await fetch(`${ESPN_BASE}/${league.sport}/${league.slug}/scoreboard${dateParam}`);
     if (!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     return (data.events||[]).map(ev=>parseESPNEvent(ev,league));
