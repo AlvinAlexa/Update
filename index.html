@@ -2024,8 +2024,11 @@ async function quickPost(sid) {
   toast('Generating thumbnail…','info');
   let thumbHtml = '';
   try {
+       const quality = document.getElementById('thumb-quality')?.value || '1140x600';
+    let [w, h] = quality.split('x').map(Number);
     const cv = document.createElement('canvas');
-    cv.width = 800; cv.height = 420;
+    cv.width = w;
+    cv.height = h;
 
     if (ev.type === 'race') {
       await drawRaceThumb(cv, {
@@ -2960,6 +2963,21 @@ function toast(msg, type='info') {
   } catch (e) {
     toast('Network error: ' + e.message, 'error');
   }
+}
+   function insertThumbnailIntoPost() {
+  const url = document.getElementById('thumb-url').value.trim();
+  if (!url) {
+    toast('No thumbnail URL. Upload first.', 'error');
+    return;
+  }
+  const title = document.getElementById('post-title').value.trim();
+  const alt = title || 'Thumbnail';
+  const imgHtml = `<div><img src="${url}" alt="${alt}" style="max-width:100%;height:auto;border-radius:8px;margin-bottom:16px"></div>\n`;
+  const bodyField = document.getElementById('post-body');
+  // Insert at the top of the post body
+  bodyField.value = imgHtml + bodyField.value;
+  toast('Thumbnail inserted at top of post ✓', 'success');
+  updateSEOMeter(); // updates SEO meter if available
 }
 </script>
 
