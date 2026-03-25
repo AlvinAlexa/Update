@@ -353,14 +353,17 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
 
 <div class="page" id="page-events">
   <div class="page-header">
-    <div class="page-title">Live <span>Events</span></div>
-<div style="display:flex;align-items:center;gap:6px">
-  <label style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0">Target Date</label>
-  <input type="date" id="target-date" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:.75rem;width:145px">
-</div>      <button class="btn" onclick="fetchAllEvents()"><span id="fetch-spinner" style="display:none" class="spinner"></span>🔄 Fetch All</button>
-      <button class="btn-orange" onclick="checkHighlights()">🎬 Post Highlights</button>
-      <button class="btn-green" onclick="bulkPostAll()">📤 Bulk Post All</button>
+  <div class="page-title">Live <span>Events</span></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:6px">
+      <label style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0;white-space:nowrap">Target Date</label>
+      <input type="date" id="target-date" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:.75rem;width:145px">
     </div>
+    <button class="btn" onclick="fetchAllEvents()"><span id="fetch-spinner" style="display:none" class="spinner"></span>🔄 Fetch All</button>
+    <button class="btn-orange" onclick="checkHighlights()">🎬 Post Highlights</button>
+    <button class="btn-green" onclick="bulkPostAll()">📤 Bulk Post All</button>
+  </div>
+</div>
   </div>
   <div class="league-pills" id="league-filter-pills"></div>
   <div class="search-bar"><input type="text" id="event-search" placeholder="Search events, teams, leagues…" oninput="filterEvents()"></div>
@@ -461,11 +464,21 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
 <div class="injector-sidebar">
   <!-- Thumbnail -->
   <div class="card">
+   
     <div class="card-title">Thumbnail</div>
     <canvas id="thumb-canvas" width="380" height="200" style="background:#111;border-radius:7px;max-width:100%"></canvas>
+     <div class="form-group" style="margin-top:8px">
+  <label>Thumbnail Quality (Resolution)</label>
+  <select id="thumb-quality">
+    <option value="380x200">Small (380x200)</option>
+    <option value="760x400">Medium (760x400)</option>
+    <option value="1140x600" selected>Large (1140x600)</option>
+  </select>
+</div>
     <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
       <button class="btn-green btn-sm" onclick="generateThumbnail()">🖼️ Generate</button>
       <button class="btn-blue btn-sm" onclick="uploadToImgbb()">☁️ Upload</button>
+       <button class="btn-gold btn-sm" onclick="insertThumbnailIntoPost()">📝 Insert into Post</button>
     </div>
     <div style="margin-top:8px"><label>Image URL</label><input type="text" id="thumb-url" placeholder="Upload to get URL…" readonly></div>
   </div>
@@ -496,29 +509,26 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
     <button class="injector-btn" onclick="injectAIContent('h2h')">
       <span class="ij-icon">⚔️</span>
       <div class="ij-text"><div class="ij-title">H2H Record</div><div class="ij-desc">Head-to-head historical summary</div></div>
-    </button> <!-- Structural Headers -->
-<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
-  <div class="card-title" style="margin-bottom:6px">🏷️ Insert Headers</div>
-  <div style="display:flex;flex-wrap:wrap;gap:5px">
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Head-to-Head Record')">H2 H2H</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Predicted Lineups')">H2 Lineups</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h2','How to Watch')">H2 Watch</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Match Preview')">H2 Preview</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h3','Key Players to Watch')">H3 Players</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h3','Recent Form')">H3 Form</button>
-    <button class="btn-ghost btn-xs" onclick="insertHeader('h3','Betting Odds')">H3 Odds</button>
+    </button>
   </div>
-</div>
-
-<!-- Match Stats Quick Insert -->
-<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
-  <div class="card-title" style="margin-bottom:6px">📋 Match Stats Table</div>
-  <button class="injector-btn" onclick="insertMatchStatsTable()">
-    <span class="ij-icon">📊</span>
-    <div class="ij-text"><div class="ij-title">Auto Match Details</div><div class="ij-desc">League · Teams · Time · Venue table</div></div>
-  </button>
+  <!-- Structural Headers -->
+  <div class="card">
+    <div class="card-title">🏷️ Insert Headers</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px">
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Head-to-Head Record')">H2 H2H</button>
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Predicted Lineups')">H2 Lineups</button>
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h2','How to Watch')">H2 Watch</button>
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h2','Match Preview')">H2 Preview</button>
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h3','Key Players to Watch')">H3 Players</button>
+      <button class="btn-ghost btn-xs" onclick="insertHeader('h3','Recent Form')">H3 Form</button>
+    </div>
+    <div style="margin-top:8px">
+      <button class="injector-btn" onclick="insertMatchStatsTable()">
+        <span class="ij-icon">📋</span>
+        <div class="ij-text"><div class="ij-title">Match Details Table</div><div class="ij-desc">League · Teams · Time · Venue</div></div>
+      </button>
+    </div>
   </div>
-
   <!-- Auto-labels -->
   <div class="card">
     <div class="card-title">🏷️ Label Presets</div>
@@ -632,12 +642,12 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
         </div>
         <div class="form-group"><label>Race/Event Banner URL (optional)</label><input type="text" id="tb-banner" placeholder="Auto-fetched for known circuits" oninput="debuildThumbnail()"></div>
         <div class="form-group"><label>Aspect Ratio</label>
-  <select id="tb-aspect" onchange="debuildThumbnail()">
-    <option value="16:9">Blog / YouTube (16:9)</option>
-    <option value="1:1">Social Square (1:1)</option>
-    <option value="9:16">Stories / Reels (9:16)</option>
-  </select>
-</div>
+          <select id="tb-aspect" onchange="debuildThumbnail()">
+            <option value="16:9">Blog / YouTube (16:9)</option>
+            <option value="1:1">Social Square (1:1)</option>
+            <option value="9:16">Stories / Reels (9:16)</option>
+          </select>
+        </div>
          <div class="form-group"><label>Quality Preset</label>
           <select id="tb-quality" onchange="debuildThumbnail()">
             <option value="800">Standard (800×420)</option>
@@ -696,9 +706,17 @@ label{display:block;font-size:.7rem;font-weight:700;color:var(–muted);margin-b
       <button class="btn btn-sm" onclick="saveConfig()">Save</button>
     </div>
     <div class="card" style="grid-column:1/-1">
-      <div class="card-title">Active Leagues</div>
-      <div id="league-toggles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px"></div>
-    </div>
+  <div class="card-title">Active Leagues
+    <span style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn-green btn-xs" onclick="selectAllLeagues()">✓ All On</button>
+      <button class="btn btn-xs" onclick="deselectAllLeagues()">✕ All Off</button>
+    </span>
+  </div>
+  <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">
+    <span id="league-count-display">0 active</span> — green = ON, grey = OFF
+  </div>
+  <div id="league-toggles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px"></div>
+</div>
     <div class="card">
       <div class="card-title">Logo Engine — Manual Overrides</div>
       <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Format: <code style="color:var(--blue)">Team Name = https://logo-url.png</code> (one per line)</div>
@@ -1014,24 +1032,44 @@ function logoImg(url, teamName) {
 // ═══════════════════════════════════════════════════════════
 // CANVAS LOGO LOADER — for thumbnail builder
 // ═══════════════════════════════════════════════════════════
-async function loadImgForCanvas(url) {
-  if (!url) return null;
-  const sources = [
-    weservProxy(url, 300),
-    `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=300&h=300&fit=contain`,
-    url,
-  ];
-  for (const src of sources) {
-    const result = await new Promise(res => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      const t = setTimeout(() => res(null), 7000);
-      img.onload  = () => { clearTimeout(t); res(img); };
-      img.onerror = () => { clearTimeout(t); res(null); };
-      img.src = src;
-    });
-    if (result) return result;
+async function loadImgForCanvas(url, teamName = '') {
+  const tryLoad = (src) => new Promise(res => {
+    if (!src) return res(null);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const t = setTimeout(() => res(null), 7000);
+    img.onload  = () => { clearTimeout(t); res(img); };
+    img.onerror = () => { clearTimeout(t); res(null); };
+    img.src = src;
+  });
+
+  // Try wsrv proxy first
+  if (url) {
+    const r = await tryLoad(weservProxy(url, 300));
+    if (r) return r;
   }
+
+  // Try legacy proxy
+  if (url) {
+    const r = await tryLoad(`https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=300&h=300&fit=contain&output=png`);
+    if (r) return r;
+  }
+
+  // Try direct URL
+  if (url) {
+    const r = await tryLoad(url);
+    if (r) return r;
+  }
+
+  // TSDB fallback by team name
+  if (teamName) {
+    const tsdbUrl = await fetchLogoFromTSDB(teamName);
+    if (tsdbUrl) {
+      const r = await tryLoad(weservProxy(tsdbUrl, 300)) || await tryLoad(tsdbUrl);
+      if (r) return r;
+    }
+  }
+
   return null;
 }
 
@@ -1243,40 +1281,7 @@ const picks = (a,n) => { const r=[]; for(let i=0;i<n;i++) r.push(pick(a)); retur
 // ═══════════════════════════════════════════════════════════
 // AI CONTENT INJECTORS — Modular HTML blocks
 // ═══════════════════════════════════════════════════════════
-function injectAIContent(type) function insertHeader(tag, text) {
-  const body = document.getElementById('post-body');
-  const styled = tag==='h2'
-    ? `\n\n<${tag} style="color:#4cc9f0;font-size:1.1rem;font-weight:900;border-left:3px solid #e63946;padding-left:10px;margin:18px 0 10px">${text}</${tag}>\n`
-    : `\n\n<${tag} style="color:#e2e8f0;font-size:.95rem;font-weight:800;margin:14px 0 8px">${text}</${tag}>\n`;
-  body.value += styled;
-  updateSEOMeter();
-  toast(`${tag.toUpperCase()} "${text}" inserted ✓`,'success');
-}
-
-function insertMatchStatsTable() {
-  const title  = document.getElementById('post-title').value;
-  const parts  = title.split(/\s+vs\s+/i);
-  const home   = parts[0]?.trim() || 'Home Team';
-  const away   = parts[1]?.split(/[–\-|]/)[0]?.trim() || 'Away Team';
-  const labels = document.getElementById('post-labels').value;
-  const league = labels.split(',')[0]?.trim() || 'League';
-  const dt     = new Date().toLocaleString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-
-  const table = `\n\n<div style="background:#0e1320;border:1px solid #1e2d45;border-radius:10px;padding:16px;margin:16px 0;overflow-x:auto">
-<h3 style="color:#4cc9f0;font-size:.95rem;margin-bottom:12px;font-weight:800">📋 Match Details</h3>
-<table style="width:100%;border-collapse:collapse;font-size:.83rem">
-<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5;width:38%">Competition</td><td style="padding:8px 12px;color:#e2e8f0;font-weight:700">${league}</td></tr>
-<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Home Team</td><td style="padding:8px 12px;color:#e63946;font-weight:700">${home}</td></tr>
-<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Away Team</td><td style="padding:8px 12px;color:#4cc9f0;font-weight:700">${away}</td></tr>
-<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Date & Time</td><td style="padding:8px 12px;color:#e2e8f0">${dt}</td></tr>
-<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Venue</td><td style="padding:8px 12px;color:#e2e8f0">TBC</td></tr>
-<tr><td style="padding:8px 12px;color:#8a9bb5">Live Stream</td><td style="padding:8px 12px;color:#06d6a0;font-weight:700">Sports 803 — Free HD</td></tr>
-</table></div>\n`;
-
-  document.getElementById('post-body').value += table;
-  updateSEOMeter();
-  toast('Match details table inserted ✓','success');
-}{
+function injectAIContent(type) {
   const title = document.getElementById('post-title').value;
   const body  = document.getElementById('post-body');
   const parts = title.split(/\s+vs\s+/i);
@@ -1863,20 +1868,35 @@ function renderRaceCard(ev) {
 // GENERATE AND FILL
 // ═══════════════════════════════════════════════════════════
 function generateAndFill(sid) {
-  const ev = findEvent(sid); if (!ev) return;
+  const ev = findEvent(sid);
+  if (!ev) { toast('Event not found — try re-fetching events','error'); return; }
   const title = ev.type==='race'
     ? `${ev.name} – Race Preview, Schedule & Live Stream | Sports 803`
     : `${ev.home.name} vs ${ev.away.name} – ${ev.league.name} Preview & Live Stream | Sports 803`;
   document.getElementById('post-title').value  = title;
   document.getElementById('post-body').value   = buildArticle(title, ev);
   document.getElementById('post-labels').value = getLabelsForEvent(ev).join(', ');
+  // Set meta description automatically
+  const metaEl = document.getElementById('seo-meta-desc');
+  if (metaEl) {
+    const metaText = ev.type==='race'
+      ? `Watch ${ev.name} live stream free on Sports 803. Full race coverage, no sign-up required.`
+      : `Watch ${ev.home.name} vs ${ev.away.name} live stream free on Sports 803. HD quality, no sign-up.`;
+    metaEl.value = metaText.substring(0,160);
+  }
   updateSEOMeter();
   openPage('compose');
-  toast('Content + auto-labels generated ✓','success');
+  toast('Content generated — ready to post ✓','success');
 }
 function findEvent(sid) {
-  const id = decodeURIComponent(sid);
-  return allEvents.find(e => String(e.id) === String(id)) || null;
+  try {
+    const id = decodeURIComponent(String(sid));
+    return allEvents.find(e => String(e.id) === id) ||
+           allEvents.find(e => String(e.id) === String(sid)) ||
+           null;
+  } catch(e) {
+    return allEvents.find(e => String(e.id) === String(sid)) || null;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1894,7 +1914,38 @@ function applyLabelPreset(labels) {
   updateSEOMeter();
   toast('Labels applied ✓','success');
 }
+function insertHeader(tag, text) {
+  const body = document.getElementById('post-body');
+  const styled = tag==='h2'
+    ? `\n\n<${tag} style="color:#4cc9f0;font-size:1.1rem;font-weight:900;border-left:3px solid #e63946;padding-left:10px;margin:18px 0 10px">${text}</${tag}>\n`
+    : `\n\n<${tag} style="color:#e2e8f0;font-size:.95rem;font-weight:800;margin:14px 0 8px">${text}</${tag}>\n`;
+  body.value += styled;
+  updateSEOMeter();
+  toast(`${tag.toUpperCase()} "${text}" inserted ✓`,'success');
+}
 
+function insertMatchStatsTable() {
+  const title  = document.getElementById('post-title').value;
+  const parts  = title.split(/\s+vs\s+/i);
+  const home   = parts[0]?.trim() || 'Home Team';
+  const away   = parts[1]?.split(/[–\-|]/)[0]?.trim() || 'Away Team';
+  const labels = document.getElementById('post-labels').value;
+  const league = labels.split(',')[0]?.trim() || 'League';
+  const dt     = new Date().toLocaleString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const table  = `\n\n<div style="background:#0e1320;border:1px solid #1e2d45;border-radius:10px;padding:16px;margin:16px 0;overflow-x:auto">
+<h3 style="color:#4cc9f0;font-size:.95rem;margin-bottom:12px;font-weight:800">📋 Match Details</h3>
+<table style="width:100%;border-collapse:collapse;font-size:.83rem">
+<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5;width:38%">Competition</td><td style="padding:8px 12px;color:#e2e8f0;font-weight:700">${league}</td></tr>
+<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Home Team</td><td style="padding:8px 12px;color:#e63946;font-weight:700">${home}</td></tr>
+<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Away Team</td><td style="padding:8px 12px;color:#4cc9f0;font-weight:700">${away}</td></tr>
+<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Date & Time</td><td style="padding:8px 12px;color:#e2e8f0">${dt}</td></tr>
+<tr style="border-bottom:1px solid #1e2d45"><td style="padding:8px 12px;color:#8a9bb5">Venue</td><td style="padding:8px 12px;color:#e2e8f0">TBC</td></tr>
+<tr><td style="padding:8px 12px;color:#8a9bb5">Live Stream</td><td style="padding:8px 12px;color:#06d6a0;font-weight:700">Sports 803 — Free HD</td></tr>
+</table></div>\n`;
+  document.getElementById('post-body').value += table;
+  updateSEOMeter();
+  toast('Match details table inserted ✓','success');
+}
 // ═══════════════════════════════════════════════════════════
 // OAUTH + BLOGGER
 // ═══════════════════════════════════════════════════════════
@@ -1923,18 +1974,22 @@ function signOut() {
 }
 
 async function postToBlogger() {
-  if (!accessToken) { toast('Sign in first','error'); return null; }
-  if (!CFG.blogId)  { toast('Enter Blog ID in Settings','error'); return null; }
+  if (!accessToken) { toast('Sign in with Google first','error'); return null; }
+  if (!CFG.blogId)  { toast('Enter Blog ID in Settings first','error'); return null; }
   const t  = document.getElementById('post-title').value.trim();
   const b  = document.getElementById('post-body').value.trim();
   const st = document.getElementById('post-status').value;
   const labels = document.getElementById('post-labels').value.split(',').map(s=>s.trim()).filter(Boolean);
-  if (!t||!b) { toast('Title and body required','error'); return null; }
-  const thumbUrl = document.getElementById('thumb-url').value.trim();
-  const html = (thumbUrl?`<div><img src="${thumbUrl}" style="max-width:100%;height:auto;border-radius:10px;margin-bottom:18px"></div>\n`:'') + b.replace(/\n/g,'<br>');
-  return postToBloggerRaw(t, html, st, labels);
+  if (!t) { toast('Post title is required','error'); return null; }
+  if (!b) { toast('Post body is required','error'); return null; }
+  const thumbUrl = document.getElementById('thumb-url')?.value.trim() || '';
+  const html = (thumbUrl ? `<div><img src="${thumbUrl}" style="max-width:100%;height:auto;border-radius:10px;margin-bottom:18px" alt="${t}"></div>\n` : '')
+    + b.replace(/\n/g,'<br>');
+  const post = await postToBloggerRaw(t, html, st, labels);
+  if (post) toast(`✓ Published: "${t.substring(0,50)}"`, 'success');
+  return post;
 }
-
+   
 async function postToBloggerRaw(title, htmlBody, status, labels) {
   let url = `https://www.googleapis.com/blogger/v3/blogs/${CFG.blogId}/posts/`;
   if (status==='DRAFT'||status==='SCHEDULED') url += '?isDraft=true';
@@ -1955,15 +2010,92 @@ async function postToBloggerRaw(title, htmlBody, status, labels) {
 
 async function quickPost(sid) {
   if (!accessToken) { toast('Sign in first','error'); return; }
-  const ev = findEvent(sid); if (!ev) return;
-  const title  = ev.type==='race' ? `${ev.name} – Race Preview & Live Stream | Sports 803` : `${ev.home.name} vs ${ev.away.name} – ${ev.league.name} Live Stream | Sports 803`;
+  const ev = findEvent(sid);
+  if (!ev) { toast('Event not found','error'); return; }
+
+  const title = ev.type==='race'
+    ? `${ev.name} – Race Preview & Live Stream | Sports 803`
+    : `${ev.home.name} vs ${ev.away.name} – ${ev.league.name} Live Stream | Sports 803`;
+
   const body   = buildArticle(title, ev);
-  const html   = body.replace(/\n/g,'<br>');
   const labels = getLabelsForEvent(ev);
-  const post   = await postToBloggerRaw(title, html, CFG.schedStatus||'DRAFT', labels);
+
+  // Auto-generate thumbnail
+  toast('Generating thumbnail…','info');
+  let thumbHtml = '';
+  try {
+    const cv = document.createElement('canvas');
+    cv.width = 800; cv.height = 420;
+
+    if (ev.type === 'race') {
+      await drawRaceThumb(cv, {
+        name:       ev.name,
+        league:     ev.league.name,
+        leagueIcon: ev.league.icon,
+        datetime:   ev.startTime ? ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '',
+        venue:      ev.venue || '',
+        bg1:        '#0a0e1a',
+        bg2:        '#1a0a00',
+        bannerUrl:  getRaceImage(ev)
+      });
+    } else {
+      // Resolve logos before drawing
+      let hLogo = ev.home.logo || '';
+      let aLogo = ev.away.logo || '';
+      if (!hLogo) hLogo = await fetchLogoFromTSDB(ev.home.name) || '';
+      if (!aLogo) aLogo = await fetchLogoFromTSDB(ev.away.name) || '';
+
+      await drawMatchThumb(cv, {
+        home:       ev.home.name,
+        away:       ev.away.name,
+        hLogo,
+        aLogo,
+        league:     ev.league.name,
+        leagueIcon: ev.league.icon,
+        datetime:   ev.startTime ? ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '',
+        bg1:        '#0d1b2a',
+        bg2:        '#1a0020'
+      });
+    }
+
+    // Upload to imgbb if key exists, otherwise embed as base64
+    if (CFG.imgbbKey) {
+      const base64 = cv.toDataURL('image/jpeg', .93).split(',')[1];
+      const fd = new FormData();
+      fd.append('key', CFG.imgbbKey);
+      fd.append('image', base64);
+      const res  = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd});
+      const data = await res.json();
+      if (data.success) {
+        thumbHtml = `<div><img src="${data.data.url}" style="max-width:100%;height:auto;border-radius:10px;margin-bottom:18px" alt="${title}"></div>\n`;
+        toast('Thumbnail uploaded ✓','success');
+      } else {
+        // Fallback to base64 embed
+        thumbHtml = `<div><img src="${cv.toDataURL('image/jpeg',.85)}" style="max-width:100%;height:auto;border-radius:10px;margin-bottom:18px" alt="${title}"></div>\n`;
+      }
+    } else {
+      // No imgbb key — embed base64 directly
+      thumbHtml = `<div><img src="${cv.toDataURL('image/jpeg',.85)}" style="max-width:100%;height:auto;border-radius:10px;margin-bottom:18px" alt="${title}"></div>\n`;
+    }
+  } catch(e) {
+    console.warn('Thumbnail generation failed:', e);
+    toast('Thumbnail skipped','warn');
+  }
+
+  const html = thumbHtml + body.replace(/\n/g,'<br>');
+
+  toast(`Posting: ${title.substring(0,40)}…`, 'info');
+  const post = await postToBloggerRaw(title, html, CFG.schedStatus||'DRAFT', labels);
   if (post) {
-    setPostLog(ev, {postId:post.id, postUrl:post.url, status:post.status||'DRAFT', title, league:ev.league.name});
+    setPostLog(ev, {
+      postId:  post.id,
+      postUrl: post.url,
+      status:  post.status || 'DRAFT',
+      title,
+      league:  ev.league.name
+    });
     renderEventCards(allEvents);
+    toast('Posted with thumbnail ✓','success');
   }
 }
 
@@ -2112,11 +2244,18 @@ function removeStreamSource(btn) {
   updateIframePreviewBox();
 }
 function getMoraUrls() { return Array.from(document.querySelectorAll('.mora-input')).map(i=>i.value.trim()).filter(Boolean); }
-function buildIframeHtml(moraUrls) {
+function buildIframeHtml(moraUrls, includeBackups = false) {
   const base   = (document.getElementById('player-base')?.value||CFG.playerBase||PLAYER_BASE_DEFAULT).trim();
   const params = moraUrls.map(u=>`mora=${encodeURIComponent(u)}`).join('&');
   const src    = params ? `${base}?${params}` : base;
-  return `<div style="margin:18px 0"><iframe loading="lazy" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" allow="encrypted-media" width="100%" height="500" src="${src}" frameborder="0" scrolling="no" allowfullscreen></iframe></div>`;
+  let html = `<div style="margin:18px 0"><iframe loading="lazy" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" allow="encrypted-media" width="100%" height="500" src="${src}" frameborder="0" scrolling="no" allowfullscreen></iframe></div>`;
+  if (includeBackups && moraUrls.length > 0) {
+    const links = moraUrls.map((u,i) =>
+      `<a href="${base}?mora=${encodeURIComponent(u)}" target="_blank" rel="noopener" style="display:inline-block;background:#0e1320;border:1px solid #1e2d45;color:#4cc9f0;padding:6px 14px;border-radius:6px;font-size:.78rem;text-decoration:none;margin:3px">▶ Stream Source ${i+1}</a>`
+    ).join('');
+    html += `\n<div style="background:#07100c;border:1px solid rgba(6,214,160,.2);border-radius:8px;padding:12px 16px;margin-top:8px"><p style="color:#06d6a0;font-size:.75rem;font-weight:800;margin-bottom:8px">🔁 BACKUP STREAM LINKS — use if player above is blocked</p>${links}</div>`;
+  }
+  return html;
 }
 function updateIframePreviewBox() {
   const urls = getMoraUrls();
@@ -2128,8 +2267,7 @@ function buildAndInsertIframe() {
   const urls = getMoraUrls();
   if (!urls.length) { toast('Add at least one stream URL','info'); return; }
   const body = document.getElementById('post-body');
-  body.value += (body.value?'\n\n':'') + buildIframeHtml(urls);
-  updateSEOMeter();
+body.value += (body.value?'\n\n':'') + buildIframeHtml(urls, true);  updateSEOMeter();
   toast('iframe inserted ✓','success');
 }
 function previewIframe() {
@@ -2339,20 +2477,50 @@ function renderPostLog() {
 // ═══════════════════════════════════════════════════════════
 function renderLeagueToggles() {
   const c = document.getElementById('league-toggles');
-  c.innerHTML = LEAGUES.map(l => `
-    <label class="toggle">
-      <input type="checkbox" ${CFG.activeLeagues.includes(l.id)?'checked':''} onchange="toggleActiveLeague('${l.id}',this.checked)">
+  c.innerHTML = LEAGUES.map(l => {
+    const isActive = CFG.activeLeagues.includes(l.id);
+    return `<label class="toggle" style="background:${isActive?'rgba(6,214,160,.08)':'var(--bg3)'};border:1px solid ${isActive?'var(--green)':'var(--border)'};border-radius:8px;padding:8px 10px;transition:.2s">
+      <input type="checkbox" ${isActive?'checked':''} onchange="toggleActiveLeague('${l.id}',this.checked)">
       <div class="toggle-slider"></div>
-      <span style="font-size:.75rem">${l.icon} ${l.name}</span>
-    </label>`).join('');
+      <span style="font-size:.75rem;color:${isActive?'var(--green)':'var(--muted2)'};font-weight:${isActive?'700':'600'}">${l.icon} ${l.name}</span>
+      <span style="margin-left:auto;font-size:.6rem;font-family:var(--font-cond);font-weight:800;padding:1px 6px;border-radius:4px;background:${isActive?'var(--green)':'var(--bg4)'};color:${isActive?'#080c14':'var(--muted)'}">${isActive?'ON':'OFF'}</span>
+    </label>`;
+  }).join('');
+   updateLeagueCountDisplay();
 }
 function toggleActiveLeague(id, on) {
   if (on) { if(!CFG.activeLeagues.includes(id)) CFG.activeLeagues.push(id); }
   else CFG.activeLeagues = CFG.activeLeagues.filter(x=>x!==id);
-  saveStorage(); renderLeagueFilterPills();
+  saveStorage();
+  renderLeagueToggles();
+  renderLeagueFilterPills();
   document.getElementById('stat-leagues').textContent = CFG.activeLeagues.length;
 }
+function selectAllLeagues() {
+  CFG.activeLeagues = LEAGUES.map(l=>l.id);
+  saveStorage();
+  renderLeagueToggles();
+  renderLeagueFilterPills();
+  document.getElementById('stat-leagues').textContent = CFG.activeLeagues.length;
+  updateLeagueCountDisplay();
+  toast(`All ${CFG.activeLeagues.length} leagues enabled ✓`,'success');
+}
 
+function deselectAllLeagues() {
+  CFG.activeLeagues = [];
+  saveStorage();
+  renderLeagueToggles();
+  renderLeagueFilterPills();
+  document.getElementById('stat-leagues').textContent = 0;
+  updateLeagueCountDisplay();
+  toast('All leagues disabled','info');
+   
+}
+
+function updateLeagueCountDisplay() {
+  const el = document.getElementById('league-count-display');
+  if (el) el.textContent = `${CFG.activeLeagues.length} of ${LEAGUES.length} active`;
+}
 // ═══════════════════════════════════════════════════════════
 // GLOBAL LABELS
 // ═══════════════════════════════════════════════════════════
@@ -2446,7 +2614,7 @@ async function drawMatchThumb(cv, opts) {
   const { home, away, hLogo, aLogo, league, leagueIcon, datetime, bg1, bg2 } = opts;
   const W=cv.width, H=cv.height, cx=W/2, cy=H/2, scale=W/800;
   const ctx = cv.getContext('2d');
-  const [hImg, aImg] = await Promise.all([loadImgForCanvas(hLogo), loadImgForCanvas(aLogo)]);
+  const [hImg, aImg] = await Promise.all([   loadImgForCanvas(hLogo, home),   loadImgForCanvas(aLogo, away) ]);
 
   ctx.clearRect(0,0,W,H);
 
@@ -2528,7 +2696,7 @@ async function drawRaceThumb(cv, opts) {
   const { name, league, leagueIcon, datetime, venue, bg1, bg2, bannerUrl } = opts;
   const W=cv.width, H=cv.height, cx=W/2, scale=W/800;
   const ctx = cv.getContext('2d');
-  const bgImg = await loadImgForCanvas(bannerUrl);
+  const bgImg = await loadImgForCanvas(bannerUrl, name);
 
   ctx.clearRect(0,0,W,H);
   const bg = ctx.createLinearGradient(0,0,W,H);
@@ -2612,26 +2780,56 @@ function debuildThumbnail() {
 
 function getThumbSize() { return parseInt(document.getElementById('tb-quality')?.value||800); }
 
-function buildThumbnail() {
-  const size = getThumbSize();
-const cv     = document.getElementById('thumb-canvas-big');
+async function buildThumbnail() {
+  const size   = getThumbSize();
+  const cv     = document.getElementById('thumb-canvas-big');
   const aspect = document.getElementById('tb-aspect')?.value || '16:9';
-  const ratios  = {'16:9':0.5625,'1:1':1,'9:16':1.778};
+  const ratios = {'16:9':0.5625,'1:1':1,'9:16':1.778};
   cv.width  = aspect==='9:16' ? Math.round(size*0.5625) : size;
   cv.height = Math.round(cv.width * (ratios[aspect]||0.5625));
-  const home  = document.getElementById('tb-home').value||'Event';
-  const away  = document.getElementById('tb-away').value||'';
-  const lg    = document.getElementById('tb-league').value||'';
-  const dt    = document.getElementById('tb-datetime').value||'';
-  const bg1   = document.getElementById('tb-bg1').value;
-  const bg2   = document.getElementById('tb-bg2').value;
-  const banner= document.getElementById('tb-banner').value.trim();
-  const hLogo = document.getElementById('tb-home-logo').value.trim();
-  const aLogo = document.getElementById('tb-away-logo').value.trim();
+
+  const home   = document.getElementById('tb-home').value || 'Event';
+  const away   = document.getElementById('tb-away').value || '';
+  const lg     = document.getElementById('tb-league').value || '';
+  const dt     = document.getElementById('tb-datetime').value || '';
+  const bg1    = document.getElementById('tb-bg1').value;
+  const bg2    = document.getElementById('tb-bg2').value;
+  const banner = document.getElementById('tb-banner').value.trim();
+  let hLogo    = document.getElementById('tb-home-logo').value.trim();
+  let aLogo    = document.getElementById('tb-away-logo').value.trim();
+
   if (away) {
-    drawMatchThumb(cv, {home,away,hLogo,aLogo,league:lg,leagueIcon:'',datetime:dt,bg1,bg2});
+    // Auto-fetch logos from TSDB if fields are empty
+    if (!hLogo && home && home !== 'Event') {
+      toast('Looking up home logo…','info');
+      hLogo = await fetchLogoFromTSDB(home) || '';
+      if (hLogo) {
+        document.getElementById('tb-home-logo').value = hLogo;
+        toast(`Home logo found ✓`,'success');
+      } else {
+        toast('No logo found for '+home,'warn');
+      }
+    }
+    if (!aLogo && away) {
+      toast('Looking up away logo…','info');
+      aLogo = await fetchLogoFromTSDB(away) || '';
+      if (aLogo) {
+        document.getElementById('tb-away-logo').value = aLogo;
+        toast(`Away logo found ✓`,'success');
+      } else {
+        toast('No logo found for '+away,'warn');
+      }
+    }
+
+    await drawMatchThumb(cv, {
+      home, away, hLogo, aLogo,
+      league: lg, leagueIcon: '', datetime: dt, bg1, bg2
+    });
   } else {
-    drawRaceThumb(cv,  {name:home,league:lg,leagueIcon:'',datetime:dt,venue:'',bg1,bg2,bannerUrl:banner});
+    await drawRaceThumb(cv, {
+      name: home, league: lg, leagueIcon: '',
+      datetime: dt, venue: '', bg1, bg2, bannerUrl: banner
+    });
   }
 }
 
@@ -2639,60 +2837,91 @@ async function generateThumbnail() {
   const title = document.getElementById('post-title').value;
   const parts = title.split(/\s+vs\s+/i);
   const cv    = document.getElementById('thumb-canvas');
-  cv.width=380; cv.height=200;
-  if (parts.length>=2) {
-    await drawMatchThumb(cv,{home:parts[0].trim(),away:parts[1].split(/[–\-|]/)[0].trim(),hLogo:'',aLogo:'',league:'',leagueIcon:'',datetime:'',bg1:'#0d1b2a',bg2:'#1a0020'});
+   const quality = document.getElementById('thumb-quality').value;
+  let [width, height] = quality.split('x').map(Number);
+  cv.width = width;
+  cv.height = height;
+
+  if (parts.length >= 2) {
+    const home = parts[0].trim();
+    const away = parts[1].split(/[–\-|]/)[0].trim();
+
+    toast('Fetching logos…','info');
+    // Try to get logos from TSDB
+    const [hLogo, aLogo] = await Promise.all([
+      fetchLogoFromTSDB(home),
+      fetchLogoFromTSDB(away)
+    ]);
+
+    await drawMatchThumb(cv, {
+      home, away,
+      hLogo: hLogo || '',
+      aLogo: aLogo || '',
+      league:     '',
+      leagueIcon: '',
+      datetime:   '',
+      bg1: '#0d1b2a',
+      bg2: '#1a0020'
+    });
+    toast('Thumbnail generated ✓','success');
   } else {
-    await drawRaceThumb(cv,{name:title,league:'',leagueIcon:'',datetime:'',venue:'',bg1:'#0a0e1a',bg2:'#1a0010',bannerUrl:''});
+    await drawRaceThumb(cv, {
+      name:       title,
+      league:     '',
+      leagueIcon: '',
+      datetime:   '',
+      venue:      '',
+      bg1:        '#0a0e1a',
+      bg2:        '#1a0010',
+      bannerUrl:  ''
+    });
+    toast('Thumbnail generated ✓','success');
   }
 }
 
 async function buildThumbFromEvent(sid) {
-  const ev = findEvent(sid); if (!ev) return;
-  const dt   = ev.startTime?ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  const ev = findEvent(sid);
+  if (!ev) { toast('Event not found','error'); return; }
+  const dt   = ev.startTime ? ev.startTime.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
   const size = getThumbSize();
   const cv   = document.getElementById('thumb-canvas-big');
-const aspect2 = document.getElementById('tb-aspect')?.value||'16:9';   const ratios2 = {'16:9':0.5625,'1:1':1,'9:16':1.778};   cv.width  = aspect2==='9:16' ? Math.round(size*0.5625) : size;   cv.height = Math.round(cv.width*(ratios2[aspect2]||0.5625));
+  const aspect = document.getElementById('tb-aspect')?.value || '16:9';
+  const ratios = {'16:9':0.5625,'1:1':1,'9:16':1.778};
+  cv.width  = aspect==='9:16' ? Math.round(size*0.5625) : size;
+  cv.height = Math.round(cv.width * (ratios[aspect]||0.5625));
+
   if (ev.type==='race') {
-    document.getElementById('tb-home').value=ev.name; document.getElementById('tb-away').value='';
-    document.getElementById('tb-league').value=ev.league.name;
-    document.getElementById('tb-home-logo').value=''; document.getElementById('tb-away-logo').value='';
-    document.getElementById('tb-banner').value=getRaceImage(ev);
-    document.getElementById('tb-datetime').value=dt;
+    document.getElementById('tb-home').value      = ev.name;
+    document.getElementById('tb-away').value      = '';
+    document.getElementById('tb-league').value    = ev.league.name;
+    document.getElementById('tb-home-logo').value = '';
+    document.getElementById('tb-away-logo').value = '';
+    document.getElementById('tb-banner').value    = getRaceImage(ev);
+    document.getElementById('tb-datetime').value  = dt;
     openPage('thumbnail');
-    await drawRaceThumb(cv,{name:ev.name,league:ev.league.name,leagueIcon:ev.league.icon,datetime:dt,venue:ev.venue||'',bg1:'#0a0e1a',bg2:'#1a0a00',bannerUrl:getRaceImage(ev)});
+    await drawRaceThumb(cv, {
+      name:ev.name, league:ev.league.name, leagueIcon:ev.league.icon,
+      datetime:dt, venue:ev.venue||'', bg1:'#0a0e1a', bg2:'#1a0a00',
+      bannerUrl:getRaceImage(ev)
+    });
   } else {
-    document.getElementById('tb-home').value=ev.home.name; document.getElementById('tb-away').value=ev.away.name;
-    document.getElementById('tb-league').value=ev.league.name;
-    document.getElementById('tb-home-logo').value=ev.home.logo||''; document.getElementById('tb-away-logo').value=ev.away.logo||'';
-    document.getElementById('tb-banner').value='';
-    document.getElementById('tb-datetime').value=dt;
+    document.getElementById('tb-home').value      = ev.home.name;
+    document.getElementById('tb-away').value      = ev.away.name;
+    document.getElementById('tb-league').value    = ev.league.name;
+    document.getElementById('tb-home-logo').value = ev.home.logo||'';
+    document.getElementById('tb-away-logo').value = ev.away.logo||'';
+    document.getElementById('tb-banner').value    = '';
+    document.getElementById('tb-datetime').value  = dt;
     openPage('thumbnail');
-    await drawMatchThumb(cv,{home:ev.home.name,away:ev.away.name,hLogo:ev.home.logo||'',aLogo:ev.away.logo||'',league:ev.league.name,leagueIcon:ev.league.icon,datetime:dt,bg1:'#0d1b2a',bg2:'#1a0020'});
+    await drawMatchThumb(cv, {
+      home:ev.home.name, away:ev.away.name,
+      hLogo:ev.home.logo||'', aLogo:ev.away.logo||'',
+      league:ev.league.name, leagueIcon:ev.league.icon,
+      datetime:dt, bg1:'#0d1b2a', bg2:'#1a0020'
+    });
   }
+  toast('Thumbnail built ✓','success');
 }
-
-async function uploadToImgbb()         { await doImgbbUpload('thumb-canvas','thumb-url'); }
-async function uploadThumbFromBuilder(){ await doImgbbUpload('thumb-canvas-big','tb-imgbb-url'); }
-async function doImgbbUpload(cvId, outId) {
-  const key = CFG.imgbbKey; if (!key) { toast('imgbb key missing','error'); return; }
-  const base64 = document.getElementById(cvId).toDataURL('image/jpeg',.93).split(',')[1];
-  try {
-    toast('Uploading to imgbb…','info');
-    const fd = new FormData(); fd.append('key',key); fd.append('image',base64);
-    const res = await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});
-    const d   = await res.json();
-    if (d.success) { document.getElementById(outId).value=d.data.url; toast('Uploaded ✓','success'); }
-    else throw new Error(d.error?.message||'Upload failed');
-  } catch(e) { toast('imgbb error: '+e.message,'error'); }
-}
-function downloadThumb() {
-  const a=document.createElement('a');
-  a.download='sports803-thumb.jpg';
-  a.href=document.getElementById('thumb-canvas-big').toDataURL('image/jpeg',.93);
-  a.click();
-}
-
 // ═══════════════════════════════════════════════════════════
 // MODAL + TOAST
 // ═══════════════════════════════════════════════════════════
@@ -2707,6 +2936,30 @@ function toast(msg, type='info') {
   t.textContent = msg;
   document.getElementById('toast-container').appendChild(t);
   setTimeout(() => { t.style.animation='slide-out .3s ease forwards'; setTimeout(()=>t.remove(),300); }, 3200);
+}
+   async function uploadToImgbb() {
+  const canvas = document.getElementById('thumb-canvas');
+  const apiKey = CFG.imgbbKey;   // make sure this exists in your CFG object
+  if (!apiKey) {
+    toast('Enter imgbb API key in Settings first', 'error');
+    return;
+  }
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  const formData = new FormData();
+  formData.append('key', apiKey);
+  formData.append('image', dataUrl.split(',')[1]);
+  try {
+    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+    const json = await res.json();
+    if (json.success) {
+      document.getElementById('thumb-url').value = json.data.url;
+      toast('Thumbnail uploaded ✓', 'success');
+    } else {
+      toast('Upload failed: ' + (json.error?.message || 'Unknown error'), 'error');
+    }
+  } catch (e) {
+    toast('Network error: ' + e.message, 'error');
+  }
 }
 </script>
 
