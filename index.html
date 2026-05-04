@@ -241,7 +241,7 @@ cursor:pointer;letter-spacing:.5px;transition:all .1s;display:flex;align-items:c
 .guide-step p{font-size:12px;color:var(–txt2);line-height:1.7}
 .guide-step code{font-size:11px;color:#ffd700;background:var(–surface3);padding:2px 6px;border-radius:4px}
 
-/* ── MATCH CARD PREVIEW STYLES (matches target output) ── */
+/* ── MATCH CARD PREVIEW STYLES ── */
 .s803w{font-family:‘Barlow’,sans-serif}
 .match-card{
 width:100%;background:#111;border:1px solid #222;border-radius:12px;
@@ -553,11 +553,6 @@ function getESPNDate(offset=0){
   return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
 }
 
-function toISOLocal(isoStr){
-  // Return UTC ISO unchanged — runtime script will localise
-  return isoStr||'';
-}
-
 function formatTimeLocal(isoStr){
   if(!isoStr) return '--:--';
   const d=new Date(isoStr);
@@ -819,6 +814,7 @@ function generateCards(){
           <div class="tname">${escHtml(awayName)}</div>
         </div>`;
 
+    // ── CORRECT card HTML output matching target structure ──
     const cardBlock=
 `  <!-- MATCH CARD: ${m.isRacing?m.teams.home.name:`${m.teams.home.name} vs ${m.teams.away.name}`} -->
   <div class="match-card" data-kickoff="${escHtml(kickoff)}">
@@ -845,7 +841,7 @@ function generateCards(){
 
     cardHtml+=cardBlock+'\n';
 
-    // Preview (live DOM, no onerror strings)
+    // Preview (live DOM)
     const prevAway=m.isRacing
       ?`<div class="team"><div class="tlogo" style="display:flex;align-items:center;justify-content:center;font-size:22px">${m.league.emoji}</div><div class="tname">${escHtml(awayName)}</div></div>`
       :`<div class="team"><img class="tlogo" src="${escHtml(aLogo)}" alt="${escHtml(awayName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="tlogo-fb">${m.league.emoji}</div><div class="tname">${escHtml(awayName)}</div></div>`;
@@ -882,22 +878,19 @@ function generateCards(){
   document.getElementById('cssOut').textContent=getCardCSS();
   document.getElementById('scriptOut').textContent=getRuntimeScript();
 
-  // Run countdown on preview
   initCardRuntime(document.getElementById('cardPreview'));
-
   document.getElementById('outputArea').scrollIntoView({behavior:'smooth',block:'start'});
   setStatus(`${selectedIds.size} card${selectedIds.size!==1?'s':''} generated`,'ok');
 }
 
-// ── Runtime script (what gets embedded in Blogger) ──
+// ── Runtime script ──
 function getRuntimeScript(){
 return `<script>
 (function(){
   /* Sports 803 — Match Card Runtime v2
      Reads data-kickoff (UTC ISO), shows local time, countdown, live/ended status.
-     Add once before </body> in Blogger theme or as HTML widget.              */
+     Add once before </body> in Blogger theme or as HTML widget. */
 
-  /* Step 1: localise kickoff times in .meta-tag[id^="s803-kt-"] */
   document.querySelectorAll('.s803w .match-card').forEach(function(card){
     var ko=card.getAttribute('data-kickoff');
     if(!ko) return;
@@ -906,12 +899,10 @@ return `<script>
     var h=d.getHours(), m=d.getMinutes(), ap=h>=12?'PM':'AM';
     h=h%12||12;
     var timeStr=h+':'+(m<10?'0'+m:m)+' '+ap;
-    /* find the time meta-tag (second .meta-tag inside .match-meta) */
     var tags=card.querySelectorAll('.match-meta .meta-tag');
     if(tags[1]) tags[1].textContent=timeStr;
   });
 
-  /* Step 2: countdown + live/ended badge updates */
   function tick(){
     document.querySelectorAll('.s803w .match-card[data-kickoff]').forEach(function(card){
       var ko=card.getAttribute('data-kickoff');
@@ -920,18 +911,15 @@ return `<script>
       var cd=card.querySelector('.cd'), badge=card.querySelector('.badge');
       if(!cd) return;
       if(diff>0){
-        /* upcoming */
         var h=Math.floor(diff/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
         cd.textContent=h>0?'In '+h+'h '+m+'m':m>0?'In '+m+'m '+s+'s':'Starting!';
         if(badge){ badge.textContent='Upcoming'; badge.className='badge upcoming'; }
         card.classList.remove('is-live');
       } else if(diff>-6300000){
-        /* live window: kickoff to +105 min */
         cd.textContent='';
         if(badge){ badge.textContent='🔴 LIVE'; badge.className='badge live'; }
         card.classList.add('is-live');
       } else {
-        /* ended */
         cd.textContent='';
         if(badge){ badge.textContent='Ended'; badge.className='badge ended'; }
         card.classList.remove('is-live');
@@ -943,13 +931,8 @@ return `<script>
 <\/script>`;
 }
 
-// ── Preview-only runtime (no script tags needed) ──
+// ── Preview runtime ──
 function initCardRuntime(container){
-  container.querySelectorAll('.match-card').forEach(function(card){
-    var ko=card.getAttribute('data-kickoff'); if(!ko) return;
-    var d=new Date(ko); if(isNaN(d)) return;
-    // time already set during render
-  });
   function tick(){
     container.querySelectorAll('.match-card[data-kickoff]').forEach(function(card){
       var ko=card.getAttribute('data-kickoff'); if(!ko) return;
