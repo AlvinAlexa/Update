@@ -13,7 +13,7 @@
   --border:#1e1e28;--border2:#262632;
   --txt:#efefef;--txt2:#7a7a8f;--txt3:#3e3e50;
   --green:#43a047;--green-dim:rgba(67,160,71,.11);--green-border:rgba(67,160,71,.28);
-  --blue:#2196f3;--orange:#ff9800;--purple:#9c27b0;
+  --blue:#2196f3;--orange:#ff9800;
   --font-head:'Barlow Condensed',sans-serif;
   --font-display:'Bebas Neue',sans-serif;
   --font-body:'Barlow',sans-serif;
@@ -22,33 +22,38 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
 
-/* ── LAYOUT ── */
-.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar{
   background:var(--surface);border-right:1px solid var(--border);
-  padding:18px 14px;display:flex;flex-direction:column;gap:11px;
+  padding:16px 13px;display:flex;flex-direction:column;gap:10px;
   position:sticky;top:0;height:100vh;overflow-y:auto;
 }
-.logo{display:flex;align-items:center;gap:10px;padding-bottom:13px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .logo-badge{
-  font-family:var(--font-display);font-size:20px;letter-spacing:1px;
-  background:var(--red);color:#fff;width:40px;height:40px;border-radius:8px;
+  font-family:var(--font-display);font-size:18px;letter-spacing:1px;
+  background:var(--red);color:#fff;width:38px;height:38px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.logo-text{font-family:var(--font-display);font-size:19px;letter-spacing:2px}
+.logo-text{font-family:var(--font-display);font-size:18px;letter-spacing:2px}
 .logo-text span{color:var(--red)}
 .logo-sub{font-size:9px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-top:1px}
 
-.sec-label{font-size:9px;font-weight:700;letter-spacing:2.5px;color:var(--txt3);text-transform:uppercase;margin-bottom:5px}
-
+.sec-label{font-size:9px;font-weight:700;letter-spacing:2.5px;color:var(--txt3);text-transform:uppercase;margin-bottom:4px}
 .divider{height:1px;background:var(--border);flex-shrink:0}
 
+.tz-badge{
+  display:flex;align-items:center;gap:6px;padding:5px 9px;
+  background:rgba(33,150,243,.07);border:1px solid rgba(33,150,243,.18);
+  border-radius:7px;font-size:11px;color:#64b5f6;
+}
+.tz-badge strong{color:#90caf9}
+
 /* Date tabs */
-.date-tabs{display:flex;gap:4px}
+.date-tabs{display:flex;gap:3px}
 .date-tab{
-  flex:1;padding:7px 3px;background:var(--surface2);border:1px solid var(--border);
+  flex:1;padding:6px 3px;background:var(--surface2);border:1px solid var(--border);
   border-radius:7px;font-family:var(--font-head);font-size:11px;font-weight:700;
   color:var(--txt2);cursor:pointer;text-align:center;transition:all .13s;
 }
@@ -56,54 +61,49 @@ body{background:var(--bg);color:var(--txt);font-family:var(--font-body);min-heig
 .date-tab.active{background:var(--red-dim);border-color:var(--red);color:var(--red)}
 
 /* Sport tabs */
-.sport-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.sport-tabs{display:flex;gap:3px;flex-wrap:wrap}
 .sport-tab{
-  padding:5px 8px;background:var(--surface2);border:1px solid var(--border);
+  padding:4px 8px;background:var(--surface2);border:1px solid var(--border);
   border-radius:6px;font-family:var(--font-head);font-size:11px;font-weight:700;
   color:var(--txt2);cursor:pointer;transition:all .13s;white-space:nowrap;
 }
 .sport-tab:hover,.sport-tab.active{background:var(--red-dim);border-color:var(--red);color:var(--red)}
 
 /* League chips */
-.league-grid{display:flex;flex-wrap:wrap;gap:4px;max-height:130px;overflow-y:auto}
+.league-grid{display:flex;flex-wrap:wrap;gap:3px;max-height:120px;overflow-y:auto}
 .league-chip{
-  font-size:10px;font-family:var(--font-head);font-weight:700;padding:4px 8px;
+  font-size:10px;font-family:var(--font-head);font-weight:700;padding:3px 7px;
   border-radius:20px;background:var(--surface2);border:1px solid var(--border2);
   color:var(--txt2);cursor:pointer;transition:all .13s;white-space:nowrap;
 }
 .league-chip.active,.league-chip:hover{background:var(--red-dim);border-color:var(--red);color:var(--red)}
 
-/* Inputs */
 input,select{
   width:100%;background:var(--surface2);border:1px solid var(--border2);
   border-radius:7px;color:var(--txt);font-family:var(--font-body);font-size:12px;
-  padding:7px 10px;outline:none;transition:border-color .13s;
+  padding:6px 10px;outline:none;transition:border-color .13s;
 }
 input:focus,select:focus{border-color:var(--red)}
 input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.4)}
-select option{background:#16161e}
 
-/* Config row */
-.cfg-row{display:flex;flex-direction:column;gap:5px}
-.cfg-hint{font-size:10px;color:var(--txt3);line-height:1.5}
+.cfg-row{display:flex;flex-direction:column;gap:4px}
+.cfg-hint{font-size:10px;color:var(--txt3);line-height:1.4}
 
-/* Buttons */
 .btn{
-  width:100%;padding:9px;border-radius:8px;font-family:var(--font-head);
+  width:100%;padding:8px;border-radius:8px;font-family:var(--font-head);
   font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;border:none;
   transition:all .13s;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:6px;
 }
 .btn-primary{background:var(--red);color:#fff;box-shadow:0 0 16px rgba(229,57,53,.18)}
-.btn-primary:hover{background:#c62828;box-shadow:0 0 22px rgba(229,57,53,.3)}
+.btn-primary:hover{background:#c62828}
 .btn-primary:active{transform:scale(.97)}
 .btn-secondary{background:var(--surface2);border:1px solid var(--border2);color:var(--txt2)}
 .btn-secondary:hover{border-color:var(--red);color:var(--txt)}
-.btn-sm{padding:6px 11px;font-size:11px;border-radius:6px;width:auto}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:6px;width:auto}
 
-/* Status */
 .status-bar{
   background:var(--surface2);border:1px solid var(--border2);border-radius:7px;
-  padding:7px 10px;font-size:11px;color:var(--txt2);min-height:32px;
+  padding:6px 10px;font-size:11px;color:var(--txt2);min-height:30px;
   display:flex;align-items:center;gap:6px;line-height:1.4;
 }
 .status-bar.loading{color:#ffb300;border-color:rgba(255,179,0,.28)}
@@ -113,112 +113,98 @@ select option{background:#16161e}
 .dot.pulse{animation:dpulse 1.1s infinite}
 @keyframes dpulse{0%,100%{opacity:1}50%{opacity:.15}}
 
-/* TZ badge */
-.tz-badge{
-  display:flex;align-items:center;gap:6px;padding:6px 9px;
-  background:rgba(33,150,243,.07);border:1px solid rgba(33,150,243,.18);
-  border-radius:7px;font-size:11px;color:#64b5f6;
-}
-.tz-badge strong{color:#90caf9}
-
-/* ── MAIN ── */
-.main{padding:18px;display:flex;flex-direction:column;gap:13px;min-width:0;overflow:hidden}
+/* MAIN */
+.main{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;overflow:hidden}
 .main-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .main-hdr h2{font-family:var(--font-display);font-size:22px;letter-spacing:2px}
 .hdr-actions{display:flex;gap:6px;align-items:center}
 .count-pill{
   background:var(--red-dim);border:1px solid var(--red-border);color:var(--red);
-  font-family:var(--font-head);font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;
+  font-family:var(--font-head);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;
 }
 
-/* Event list */
 .events-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.events-empty{padding:44px;text-align:center;color:var(--txt3);font-size:13px}
-.events-empty span{display:block;font-size:30px;margin-bottom:10px}
-.events-empty small{display:block;font-size:11px;margin-top:5px;color:var(--txt3)}
-.loader-wrap{padding:44px;text-align:center;color:var(--txt3)}
-.spinner{width:28px;height:28px;border:3px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 10px}
+.events-empty{padding:40px;text-align:center;color:var(--txt3);font-size:13px}
+.events-empty span{display:block;font-size:28px;margin-bottom:8px}
+.events-empty small{display:block;font-size:11px;margin-top:5px}
+.loader-wrap{padding:40px;text-align:center;color:var(--txt3)}
+.spinner{width:26px;height:26px;border:3px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* League group header */
 .league-hdr{
-  padding:6px 13px;background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:5px 12px;background:var(--surface2);border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:8px;
 }
 .league-hdr-name{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--txt2)}
 .league-hdr-ct{
   font-size:10px;background:var(--red-dim);color:var(--red);border:1px solid var(--red-border);
-  padding:1px 7px;border-radius:10px;font-family:var(--font-head);font-weight:700;margin-left:auto;
+  padding:1px 6px;border-radius:10px;font-family:var(--font-head);font-weight:700;margin-left:auto;
 }
 
-/* Event row */
 .event-item{
-  display:flex;align-items:center;gap:9px;padding:9px 12px;
+  display:flex;align-items:center;gap:9px;padding:8px 12px;
   border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;
 }
 .event-item:last-child{border-bottom:none}
 .event-item:hover{background:var(--surface2)}
 .event-item.selected{background:rgba(229,57,53,.04);border-left:3px solid var(--red)}
 .ev-chk{
-  width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);
+  width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border2);
   background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;
 }
 .event-item.selected .ev-chk{background:var(--red);border-color:var(--red)}
 .ev-chk svg{width:8px;height:8px;display:none}
 .event-item.selected .ev-chk svg{display:block}
 .ev-logos{display:flex;align-items:center;gap:3px;flex-shrink:0}
-.ev-logo{width:26px;height:26px;border-radius:50%;background:var(--surface3);object-fit:contain;padding:2px}
+.ev-logo{width:24px;height:24px;border-radius:50%;background:var(--surface3);object-fit:contain;padding:2px}
 .ev-vs{font-size:7px;color:var(--txt3);font-weight:700}
 .ev-info{flex:1;min-width:0}
 .ev-teams{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev-meta{font-size:10px;color:var(--txt2);display:flex;gap:7px;margin-top:1px}
+.ev-meta{font-size:10px;color:var(--txt2);display:flex;gap:6px;margin-top:1px}
 .ev-league{color:var(--red);font-weight:600}
 .ev-time-col{text-align:right;flex-shrink:0}
 .ev-hour{font-family:var(--font-head);font-size:12px;font-weight:700}
-.ev-status{font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;display:inline-block;margin-top:2px;font-family:var(--font-head);letter-spacing:.3px}
+.ev-status{font-size:9px;padding:2px 5px;border-radius:10px;font-weight:700;display:inline-block;margin-top:2px;font-family:var(--font-head);letter-spacing:.3px}
 .ev-status.live{background:var(--red);color:#fff;animation:dpulse 1.4s infinite}
 .ev-status.ended{background:var(--surface3);color:var(--txt3);border:1px solid var(--border2)}
 .ev-status.upcoming{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}
 
 /* Stream editor */
-.stream-editor{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:10px}
+.stream-editor{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:9px}
 .stream-hdr{display:flex;align-items:center;justify-content:space-between}
 .stream-hdr h3{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;color:var(--txt2);text-transform:uppercase}
-.stream-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.stream-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
 .stream-row:last-child{margin-bottom:0}
-.stream-lbl{font-size:11px;color:var(--txt2);min-width:120px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.stream-lbl{font-size:11px;color:var(--txt2);min-width:110px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
 .stream-row input{flex:1}
 
-/* ── OUTPUT ── */
+/* Output */
 .output-area{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
 .out-tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto}
 .out-tab{
-  padding:10px 14px;font-family:var(--font-head);font-size:11px;font-weight:700;
+  padding:9px 13px;font-family:var(--font-head);font-size:11px;font-weight:700;
   letter-spacing:.5px;color:var(--txt2);cursor:pointer;border-bottom:2px solid transparent;
   transition:all .11s;white-space:nowrap;
 }
 .out-tab.active{color:var(--red);border-bottom-color:var(--red)}
 .out-tab:hover:not(.active){color:var(--txt)}
-.out-panel{display:none;padding:14px}
+.out-panel{display:none;padding:13px}
 .out-panel.active{display:block}
 
-/* Preview */
-.preview-wrap{background:#0a0a0d;border-radius:8px;padding:11px;max-width:520px;margin:0 auto}
+.preview-wrap{background:#0a0a0d;border-radius:8px;padding:10px;max-width:520px;margin:0 auto}
 
-/* Code */
 .code-blk{
   background:#060608;border:1px solid var(--border);border-radius:7px;
   padding:12px;font-family:'Courier New',monospace;font-size:11px;line-height:1.7;
-  color:#9bcc9b;overflow:auto;max-height:420px;white-space:pre;word-break:normal;
+  color:#9bcc9b;overflow:auto;max-height:460px;white-space:pre;word-break:normal;
 }
-.code-lbl{font-size:10px;color:var(--txt2);margin:12px 0 5px;display:flex;align-items:center;gap:5px}
+.code-lbl{font-size:10px;color:var(--txt2);margin:10px 0 5px;display:flex;align-items:center;gap:5px}
 .code-lbl:first-child{margin-top:0}
 .code-lbl code{background:var(--surface3);color:#ffd700;padding:1px 5px;border-radius:3px;font-size:10px}
 
-/* Copy bar */
 .copy-bar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .copy-btn{
-  flex:1;min-width:120px;padding:7px 10px;background:var(--surface2);border:1px solid var(--border2);
+  flex:1;min-width:110px;padding:7px 10px;background:var(--surface2);border:1px solid var(--border2);
   border-radius:7px;color:var(--txt2);font-family:var(--font-head);font-size:11px;font-weight:700;
   cursor:pointer;letter-spacing:.4px;transition:all .1s;display:flex;align-items:center;justify-content:center;gap:5px;
 }
@@ -227,12 +213,12 @@ select option{background:#16161e}
 
 /* Guide */
 .guide{display:flex;flex-direction:column;gap:8px}
-.guide-step{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:12px}
-.guide-step h4{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--red);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.guide-step{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:11px}
+.guide-step h4{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--red);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
 .guide-step p{font-size:12px;color:var(--txt2);line-height:1.7}
 .guide-step code{font-size:11px;color:#ffd700;background:var(--surface3);padding:2px 5px;border-radius:3px}
 
-/* ── MATCH CARD PREVIEW STYLES (exact target structure) ── */
+/* ── MATCH CARD PREVIEW (exact output structure) ── */
 .s803w{font-family:'Barlow',sans-serif;width:100%}
 .match-card{
   width:100%;background:#111;border:1px solid #222;border-radius:12px;
@@ -259,7 +245,6 @@ select option{background:#16161e}
 .match-card .meta-tag:first-child{color:#e53935;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.2)}
 @keyframes s803p{0%,100%{opacity:1}50%{opacity:.6}}
 
-/* Scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -267,14 +252,14 @@ select option{background:#16161e}
 @media(max-width:680px){
   .app{grid-template-columns:1fr}
   .sidebar{position:static;height:auto}
-  .main{padding:12px}
+  .main{padding:11px}
 }
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ══ SIDEBAR ══ -->
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-badge">803</div>
@@ -286,12 +271,11 @@ select option{background:#16161e}
 
   <div class="tz-badge">
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    Timezone: <strong id="tzName">detecting…</strong>
+    TZ: <strong id="tzName">detecting…</strong>
   </div>
 
   <div class="divider"></div>
 
-  <!-- Date -->
   <div>
     <div class="sec-label">Date</div>
     <div class="date-tabs">
@@ -307,9 +291,8 @@ select option{background:#16161e}
 
   <div class="divider"></div>
 
-  <!-- Sport -->
   <div>
-    <div class="sec-label" style="margin-bottom:6px">Sport</div>
+    <div class="sec-label" style="margin-bottom:5px">Sport</div>
     <div class="sport-tabs" id="sportTabs">
       <div class="sport-tab active" data-sport="all">🌐 All</div>
       <div class="sport-tab" data-sport="football">⚽ Football</div>
@@ -319,9 +302,8 @@ select option{background:#16161e}
     </div>
   </div>
 
-  <!-- League -->
   <div>
-    <div class="sec-label" style="margin-bottom:5px">League</div>
+    <div class="sec-label" style="margin-bottom:4px">League</div>
     <div class="league-grid" id="leagueFilter"></div>
   </div>
 
@@ -336,17 +318,10 @@ select option{background:#16161e}
 
   <div class="divider"></div>
 
-  <!-- Config -->
   <div class="cfg-row">
     <div class="sec-label">Blog Base URL</div>
     <input type="text" id="blogBase" placeholder="https://sports803livestream.blogspot.com"/>
-    <div class="cfg-hint">Used to build post URLs automatically</div>
-  </div>
-
-  <div class="cfg-row">
-    <div class="sec-label">Default Stream URL</div>
-    <input type="text" id="defaultStream" placeholder="https://sports803.online/…"/>
-    <div class="cfg-hint">Fallback link for cards with no custom URL</div>
+    <div class="cfg-hint">Auto-builds post URLs if no custom link entered</div>
   </div>
 
   <button class="btn btn-secondary" style="margin-top:2px" onclick="generateCards()">
@@ -355,7 +330,7 @@ select option{background:#16161e}
   </button>
 </aside>
 
-<!-- ══ MAIN ══ -->
+<!-- MAIN -->
 <main class="main">
   <div class="main-hdr">
     <h2>MATCH EVENTS</h2>
@@ -369,11 +344,11 @@ select option{background:#16161e}
     <div class="events-empty">
       <span>📅</span>
       Select a date and click <strong>Fetch Matches</strong>
-      <small>Uses ESPN's free API — no key required</small>
+      <small>Free ESPN API — no key needed</small>
     </div>
   </div>
 
-  <!-- Stream / URL editor -->
+  <!-- Post URL editor -->
   <div class="stream-editor" id="streamEditor" style="display:none">
     <div class="stream-hdr">
       <h3>🔗 Post URLs</h3>
@@ -428,15 +403,15 @@ select option{background:#16161e}
         </div>
         <div class="guide-step">
           <h4>Step 2 — Runtime Script (one-time)</h4>
-          <p>Paste the script from the <strong>Script tab</strong> once, just before <code>&lt;/body&gt;</code>. It handles live countdown timers, local time conversion, and LIVE/Ended status.</p>
+          <p>Paste the script from the <strong>Script tab</strong> once, just before <code>&lt;/body&gt;</code>. Handles local time conversion, live countdown, and LIVE/Ended badge updates automatically.</p>
         </div>
         <div class="guide-step">
           <h4>Step 3 — Card HTML (per post)</h4>
-          <p>For each post, switch editor to <strong>HTML mode</strong> and paste the card HTML. The <code>data-kickoff</code> UTC timestamp drives automatic local time display + countdown.</p>
+          <p>For each post, switch Blogger editor to <strong>HTML mode</strong> and paste the card HTML. The <code>data-kickoff</code> UTC timestamp drives automatic local time + countdown.</p>
         </div>
         <div class="guide-step">
-          <h4>About data-kickoff</h4>
-          <p>Times are stored in UTC ISO 8601 (e.g. <code>2026-05-04T19:00:00Z</code>). The script converts to each visitor's local timezone — no manual conversion needed.</p>
+          <h4>HTML Structure</h4>
+          <p>Each card follows the exact format: <code>.match-card[data-kickoff]</code> → <code>.match-row</code> with two <code>.team</code> blocks and a central <code>.mc</code> → <code>.match-meta</code> footer. The <code>id="s803-kt-N"</code> on the time tag is targeted by the runtime script for local time display.</p>
         </div>
       </div>
     </div>
@@ -480,16 +455,16 @@ const ALL_LEAGUES=[
   {id:'mma-ufc',name:'UFC / MMA',short:'UFC',country:'World',flag:'🥊',sport:'other',emoji:'🥊',espnPath:'mma/ufc',espnType:'mma'},
 ];
 
-// ══ STATE ══
+// STATE
 let allMatches=[], selectedIds=new Set(), postLinks={};
 let activeSport='all', activeLeague='all', activeOffset=0;
 let ktCounter=1;
 
-// ── Timezone ──
+// TZ display
 try{ document.getElementById('tzName').textContent=Intl.DateTimeFormat().resolvedOptions().timeZone; }
-catch{ document.getElementById('tzName').textContent='local'; }
+catch(e){ document.getElementById('tzName').textContent='local'; }
 
-// ── League filter ──
+// Build league filter chips
 function buildLeagueFilter(){
   const c=document.getElementById('leagueFilter');
   const leagues=activeSport==='all'?ALL_LEAGUES:ALL_LEAGUES.filter(l=>l.sport===activeSport);
@@ -506,7 +481,7 @@ function buildLeagueFilter(){
   });
 }
 
-// ── Date helpers ──
+// Date helpers
 function getESPNDate(offset=0){
   const d=new Date(); d.setDate(d.getDate()+offset);
   return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
@@ -514,11 +489,18 @@ function getESPNDate(offset=0){
 function formatTimeLocal(iso){
   if(!iso) return '--:--';
   const d=new Date(iso);
-  let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
-  h=h%12||12; return h+':'+(m<10?'0'+m:m)+' '+ap;
+  let h=d.getHours(), m=d.getMinutes(), ap=h>=12?'PM':'AM';
+  h=h%12||12;
+  return h+':'+(m<10?'0'+m:m)+' '+ap;
+}
+// For the meta-tag time label, show HH:MM (24h) matching the example "19:00"
+function formatTimeLabel(iso){
+  if(!iso) return '--:--';
+  const d=new Date(iso);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 
-// ── Status helpers ──
+// Status helpers
 const LIVE_S=new Set(['STATUS_IN_PROGRESS','STATUS_HALFTIME','STATUS_IN_PROGRESS_2','STATUS_END_PERIOD','STATUS_OVERTIME','STATUS_SHOOTOUT']);
 const END_S=new Set(['STATUS_FINAL','STATUS_FULL_TIME','STATUS_FINAL_OT','STATUS_FINAL_PEN','STATUS_POSTPONED','STATUS_CANCELED','STATUS_SUSPENDED','STATUS_ABANDONED']);
 function getStatus(m){ if(LIVE_S.has(m.statusType)) return 'live'; if(END_S.has(m.statusType)) return 'ended'; return 'upcoming'; }
@@ -528,17 +510,17 @@ function getStatusLabel(m){
   if(s==='STATUS_POSTPONED') return 'Postponed';
   if(s==='STATUS_CANCELED') return 'Cancelled';
   if(END_S.has(s)) return 'Ended';
-  if(LIVE_S.has(s)) return m.elapsed?m.elapsed+"'":'🔴 LIVE';
+  if(LIVE_S.has(s)) return m.elapsed?m.elapsed+"'":'LIVE';
   return 'Upcoming';
 }
 function getScore(m){
   if(m.isRacing) return '🏁';
-  if(m.scoreHome===null||m.scoreAway===null) return 'VS';
+  if(m.scoreHome===null||m.scoreAway===null) return '- -';
   return m.scoreHome+' - '+m.scoreAway;
 }
 function fbLogo(name){ return 'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&size=64&background=1a1a1a&color=e53935&bold=true&rounded=true'; }
 
-// ── Normalizers ──
+// Normalizers
 function normalizeSoccer(ev,league){
   try{
     const comp=ev.competitions?.[0]; if(!comp) return null;
@@ -588,24 +570,22 @@ function normalizeRacing(ev,league){
       id:ev.id, date:ev.date, sport:'motorsport', isRacing:true,
       league:{name:league.name,flag:league.flag,emoji:league.emoji,id:league.id},
       homeName:ev.name||ev.shortName||'Race Event',
-      homeLogo:'',
-      awayName:ev.circuit?.shortName||ev.venue?.fullName||'',
-      awayLogo:'',
-      scoreHome:null, scoreAway:null,
+      homeLogo:'', awayName:ev.circuit?.shortName||ev.venue?.fullName||'',
+      awayLogo:'', scoreHome:null, scoreAway:null,
       statusType:sType, elapsed:'',
       venue:ev.circuit?.fullName||ev.venue?.fullName||'TBC'
     };
   }catch{ return null; }
 }
 
-// ── Status bar ──
+// Status bar
 function setStatus(msg,type=''){
   const el=document.getElementById('statusBar');
   el.className='status-bar'+(type?' '+type:'');
   el.innerHTML=`<div class="dot${type==='loading'?' pulse':''}"></div><span>${msg}</span>`;
 }
 
-// ── FETCH ──
+// FETCH
 async function fetchMatches(){
   const custom=document.getElementById('customDate').value;
   const dateStr=custom?custom.replace(/-/g,''):getESPNDate(activeOffset);
@@ -645,8 +625,7 @@ async function fetchMatches(){
       document.getElementById('eventsArea').innerHTML=`<div class="events-empty"><span>🔍</span>No matches found for ${disp}<small>Try a different date, sport or league</small></div>`;
       setStatus('No events found','err'); return;
     }
-    ktCounter=1;
-    selectedIds.clear();
+    ktCounter=1; selectedIds.clear();
     renderEvents();
     setStatus(allMatches.length+' event'+(allMatches.length!==1?'s':'')+' loaded','ok');
   }catch(err){
@@ -655,7 +634,7 @@ async function fetchMatches(){
   }
 }
 
-// ── RENDER EVENTS ──
+// RENDER EVENTS
 function renderEvents(){
   const area=document.getElementById('eventsArea');
   let matches=allMatches;
@@ -697,7 +676,7 @@ function renderEvents(){
   updateSelCount();
 }
 
-// ── SELECTION ──
+// SELECTION
 function toggleSelect(id){
   selectedIds.has(id)?selectedIds.delete(id):selectedIds.add(id);
   document.querySelector(`[data-id="${id}"]`)?.classList.toggle('selected',selectedIds.has(id));
@@ -720,7 +699,7 @@ function updateSelCount(){
   document.getElementById('selAllBtn').textContent=(all.length>0&&all.length===sel.length)?'Deselect All':'Select All';
 }
 
-// ── STREAM EDITOR ──
+// POST URL EDITOR
 function updateStreamEditor(){
   const ed=document.getElementById('streamEditor');
   if(!selectedIds.size){ ed.style.display='none'; return; }
@@ -740,7 +719,7 @@ function updateStreamEditor(){
   document.getElementById('streamInputs').innerHTML=h;
 }
 
-// ── URL builder ──
+// URL builder
 function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 function buildPostUrl(m){
   if(postLinks[m.id]) return postLinks[m.id];
@@ -752,12 +731,12 @@ function buildPostUrl(m){
   return `${base}/${yr}/${mo}/${title}-${league}.html`;
 }
 
-// ── Escape HTML ──
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── GENERATE CARDS ──
+// ══ GENERATE CARDS — exact output structure ══
 function generateCards(){
   if(!selectedIds.size){ setStatus('Select at least one event first','err'); return; }
+
   let previewHtml='', cardBlocks='';
   let idx=1;
 
@@ -768,12 +747,23 @@ function generateCards(){
     const kickoff=m.date||'';
     const hLogo=m.homeLogo||fbLogo(m.homeName);
     const aLogo=m.awayLogo||fbLogo(m.awayName);
-    const hFb=fbLogo(m.homeName), aFb=fbLogo(m.awayName);
     const postUrl=buildPostUrl(m);
     const leagueMeta=m.league.flag+' '+m.league.name;
+    // Time label: local HH:MM (matches the runtime script which then overwrites it with AM/PM)
+    const timeLabel=formatTimeLabel(kickoff);
 
-    // Away side — exact target structure
-    const awaySide=m.isRacing
+    // ── EXACT HTML STRUCTURE matching the target example ──
+    // Home team block
+    const homeBlock=
+`        <div class="team">
+          <img class="tlogo" src="${esc(hLogo)}" alt="${esc(m.homeName)}"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="tlogo-fb">${m.league.emoji}</div>
+          <div class="tname">${esc(m.homeName)}</div>
+        </div>`;
+
+    // Away team block (or league emoji for racing)
+    const awayBlock=m.isRacing
       ?`        <div class="team">
           <div class="tlogo" style="display:flex;align-items:center;justify-content:center;font-size:22px">${m.league.emoji}</div>
           <div class="tname">${esc(m.league.name)}</div>
@@ -785,35 +775,28 @@ function generateCards(){
           <div class="tname">${esc(m.awayName)}</div>
         </div>`;
 
-    // ── EXACT TARGET HTML STRUCTURE ──
     const block=
-`  <!-- MATCH CARD: ${m.isRacing?m.homeName:m.homeName+' vs '+m.awayName} -->
-  <div class="match-card" data-kickoff="${esc(kickoff)}">
+`<div class="match-card" data-kickoff="${esc(kickoff)}">
     <a href="${esc(postUrl)}">
       <div class="match-row">
-        <div class="team">
-          <img class="tlogo" src="${esc(hLogo)}" alt="${esc(m.homeName)}"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-          <div class="tlogo-fb">${m.league.emoji}</div>
-          <div class="tname">${esc(m.homeName)}</div>
-        </div>
+${homeBlock}
         <div class="mc">
           <div class="score">${esc(score)}</div>
           <div class="badge ${st}">${esc(lbl)}</div>
           <div class="cd"></div>
         </div>
-${awaySide}
+${awayBlock}
       </div>
       <div class="match-meta">
         <div class="meta-tag">${esc(leagueMeta)}</div>
-        <div class="meta-tag" id="${ktId}">${formatTimeLocal(kickoff)}</div>
+        <div class="meta-tag" id="${ktId}">${timeLabel}</div>
       </div>
     </a>
   </div>`;
 
     cardBlocks+=block+'\n';
 
-    // Preview (live DOM version)
+    // Live preview version
     const prevAway=m.isRacing
       ?`<div class="team"><div class="tlogo" style="display:flex;align-items:center;justify-content:center;font-size:22px">${m.league.emoji}</div><div class="tname">${esc(m.league.name)}</div></div>`
       :`<div class="team"><img class="tlogo" src="${esc(aLogo)}" alt="${esc(m.awayName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="tlogo-fb">${m.league.emoji}</div><div class="tname">${esc(m.awayName)}</div></div>`;
@@ -836,72 +819,74 @@ ${awaySide}
         </div>
         <div class="match-meta">
           <div class="meta-tag">${esc(leagueMeta)}</div>
-          <div class="meta-tag" id="${ktId}">${formatTimeLocal(kickoff)}</div>
+          <div class="meta-tag" id="${ktId}-prev">${timeLabel}</div>
         </div>
       </a>
     </div>`;
   });
 
-  const fullHtml=`<div class="s803w">\n${cardBlocks}\n</div>`;
-
   document.getElementById('outputArea').style.display='block';
   document.getElementById('cardPreview').innerHTML=previewHtml;
-  document.getElementById('cardHtmlOut').textContent=fullHtml;
+  document.getElementById('cardHtmlOut').textContent=cardBlocks.trimEnd();
   document.getElementById('cssOut').textContent=getCardCSS();
   document.getElementById('scriptOut').textContent=getRuntimeScript();
 
   initPreviewRuntime(document.getElementById('cardPreview'));
   document.getElementById('outputArea').scrollIntoView({behavior:'smooth',block:'start'});
-  setStatus(selectedIds.size+' card'+(selectedIds.size!==1?'s':'')+' generated','ok');
+  setStatus(selectedIds.size+' card'+(selectedIds.size!==1?'s':'')+' generated ✓','ok');
 }
 
-// ── Runtime script (paste into Blogger) ──
+// ── Runtime script (exact target script) ──
 function getRuntimeScript(){
 return `<script>
 (function(){
   /* Sports 803 Match Card Runtime v2
      Reads data-kickoff (UTC ISO), shows local time, live countdown, badge updates.
-     Paste once before </body> in Blogger theme or HTML widget. */
+     Paste once before <\/body> in Blogger theme or post HTML widget. */
 
-  // Local time display
-  document.querySelectorAll('.s803w .match-card[data-kickoff]').forEach(function(card){
-    var ko=card.getAttribute('data-kickoff');
-    var d=new Date(ko); if(isNaN(d)) return;
-    var h=d.getHours(), m=d.getMinutes(), ap=h>=12?'PM':'AM';
-    h=h%12||12;
-    var tags=card.querySelectorAll('.match-meta .meta-tag');
-    if(tags[1]) tags[1].textContent=h+':'+(m<10?'0'+m:m)+' '+ap;
+  // Convert kickoff times to visitor's local time
+  document.querySelectorAll('.match-card[data-kickoff]').forEach(function(card){
+    var ko = card.getAttribute('data-kickoff');
+    var d = new Date(ko); if(isNaN(d)) return;
+    var h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    var tags = card.querySelectorAll('.match-meta .meta-tag');
+    if(tags[1]) tags[1].textContent = h + ':' + (m < 10 ? '0' + m : m) + ' ' + ap;
   });
 
-  // Live countdown + status
+  // Live countdown + badge status ticker
   function tick(){
-    document.querySelectorAll('.s803w .match-card[data-kickoff]').forEach(function(card){
-      var ko=card.getAttribute('data-kickoff'); if(!ko) return;
-      var diff=new Date(ko)-Date.now();
-      var cd=card.querySelector('.cd'), badge=card.querySelector('.badge');
+    document.querySelectorAll('.match-card[data-kickoff]').forEach(function(card){
+      var ko = card.getAttribute('data-kickoff'); if(!ko) return;
+      var diff = new Date(ko) - Date.now();
+      var cd = card.querySelector('.cd');
+      var badge = card.querySelector('.badge');
       if(!cd) return;
-      if(diff>0){
-        var h=Math.floor(diff/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
-        cd.textContent=h>0?'In '+h+'h '+m+'m':m>0?'In '+m+'m '+s+'s':'Starting!';
-        if(badge){badge.textContent='Upcoming';badge.className='badge upcoming';}
+      if(diff > 0){
+        var h = Math.floor(diff / 3600000);
+        var m = Math.floor(diff % 3600000 / 60000);
+        var s = Math.floor(diff % 60000 / 1000);
+        cd.textContent = h > 0 ? 'In ' + h + 'h ' + m + 'm' : m > 0 ? 'In ' + m + 'm ' + s + 's' : 'Starting!';
+        if(badge){ badge.textContent = 'Upcoming'; badge.className = 'badge upcoming'; }
         card.classList.remove('is-live');
-      } else if(diff>-6300000){
-        cd.textContent='';
-        if(badge){badge.textContent='🔴 LIVE';badge.className='badge live';}
+      } else if(diff > -6300000){
+        cd.textContent = '';
+        if(badge){ badge.textContent = '🔴 LIVE'; badge.className = 'badge live'; }
         card.classList.add('is-live');
       } else {
-        cd.textContent='';
-        if(badge){badge.textContent='Ended';badge.className='badge ended';}
+        cd.textContent = '';
+        if(badge){ badge.textContent = 'Ended'; badge.className = 'badge ended'; }
         card.classList.remove('is-live');
       }
     });
   }
-  tick(); setInterval(tick,1000);
+  tick();
+  setInterval(tick, 1000);
 })();
 <\/script>`;
 }
 
-// ── Preview runtime ──
+// Preview runtime (live in tool)
 function initPreviewRuntime(container){
   function tick(){
     container.querySelectorAll('.match-card[data-kickoff]').forEach(function(card){
@@ -925,43 +910,43 @@ function initPreviewRuntime(container){
   tick(); setInterval(tick,1000);
 }
 
-// ── Card CSS (paste into Blogger theme) ──
+// Card CSS
 function getCardCSS(){
-return `/* Sports 803 Match Cards — paste above ]]></b:skin> */
-.s803w{font-family:'Barlow',sans-serif;width:100%;box-sizing:border-box}
-.match-card{width:100%;background:#111;border:1px solid #222;border-radius:12px;overflow:hidden;transition:border-color .2s;margin-bottom:8px;box-sizing:border-box}
-.match-card:last-child{margin-bottom:0}
-.match-card:hover{border-color:#e53935}
-.match-card.is-live{border-color:rgba(229,57,53,.5);box-shadow:0 0 0 1px rgba(229,57,53,.12)}
-.match-card a{text-decoration:none;color:#fff;display:block}
-.match-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
-.match-card .team{display:flex;flex-direction:column;align-items:center;gap:6px;width:90px;text-align:center}
-.match-card .tlogo{width:54px;height:54px;object-fit:contain;border-radius:50%;background:#1a1a1a;padding:4px}
-.match-card .tlogo-fb{width:54px;height:54px;border-radius:50%;background:#1a1a1a;display:none;align-items:center;justify-content:center;font-size:22px}
-.match-card .tname{font-size:11px;color:#ccc;line-height:1.3;max-width:90px}
-.match-card .mc{flex:1;text-align:center;padding:0 8px}
-.match-card .score{font-size:22px;font-weight:800;color:#fff;letter-spacing:2px}
-.match-card .badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:6px;letter-spacing:.5px}
-.match-card .badge.upcoming{background:#1a2a1a;color:#4caf50;border:1px solid #2e5c2e}
-.match-card .badge.live{background:#e53935;color:#fff;animation:s803p 1.5s infinite}
-.match-card .badge.ended{background:#1e1e1e;color:#666;border:1px solid #333}
-.match-card .cd{font-size:10px;color:#666;margin-top:4px;min-height:14px}
-.match-meta{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid #1c1c1c;align-items:center}
-.match-card .meta-tag{font-size:10px;color:#777;background:#1a1a1a;padding:3px 8px;border-radius:6px}
-.match-card .meta-tag:first-child{color:#e53935;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.2)}
-@keyframes s803p{0%,100%{opacity:1}50%{opacity:.6}}`;
+return `/* Sports 803 Match Cards — paste above ]]></b:skin> in Blogger theme */
+.s803w { font-family: 'Barlow', sans-serif; width: 100%; box-sizing: border-box; }
+.match-card { width: 100%; background: #111; border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: border-color .2s; margin-bottom: 8px; box-sizing: border-box; }
+.match-card:last-child { margin-bottom: 0; }
+.match-card:hover { border-color: #e53935; }
+.match-card.is-live { border-color: rgba(229,57,53,.5); box-shadow: 0 0 0 1px rgba(229,57,53,.12); }
+.match-card a { text-decoration: none; color: #fff; display: block; }
+.match-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+.match-card .team { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 90px; text-align: center; }
+.match-card .tlogo { width: 54px; height: 54px; object-fit: contain; border-radius: 50%; background: #1a1a1a; padding: 4px; }
+.match-card .tlogo-fb { width: 54px; height: 54px; border-radius: 50%; background: #1a1a1a; display: none; align-items: center; justify-content: center; font-size: 22px; }
+.match-card .tname { font-size: 11px; color: #ccc; line-height: 1.3; max-width: 90px; }
+.match-card .mc { flex: 1; text-align: center; padding: 0 8px; }
+.match-card .score { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 2px; }
+.match-card .badge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; letter-spacing: .5px; }
+.match-card .badge.upcoming { background: #1a2a1a; color: #4caf50; border: 1px solid #2e5c2e; }
+.match-card .badge.live { background: #e53935; color: #fff; animation: s803p 1.5s infinite; }
+.match-card .badge.ended { background: #1e1e1e; color: #666; border: 1px solid #333; }
+.match-card .cd { font-size: 10px; color: #666; margin-top: 4px; min-height: 14px; }
+.match-meta { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 14px; border-top: 1px solid #1c1c1c; align-items: center; }
+.match-card .meta-tag { font-size: 10px; color: #777; background: #1a1a1a; padding: 3px 8px; border-radius: 6px; }
+.match-card .meta-tag:first-child { color: #e53935; background: rgba(229,57,53,.1); border: 1px solid rgba(229,57,53,.2); }
+@keyframes s803p { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }`;
 }
 
-// ── Copy helper ──
+// Copy helper
 async function copyEl(id,btn,lbl){
   try{
     await navigator.clipboard.writeText(document.getElementById(id).textContent);
     btn.classList.add('copied'); btn.textContent='✓ Copied!';
     setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent=lbl; },2200);
-  }catch{ setStatus('Copy failed — select and copy manually','err'); }
+  }catch{ setStatus('Copy failed — select text and copy manually','err'); }
 }
 
-// ── Output tabs ──
+// Output tabs
 document.querySelectorAll('.out-tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.out-tab').forEach(t=>t.classList.remove('active'));
@@ -971,7 +956,7 @@ document.querySelectorAll('.out-tab').forEach(tab=>{
   });
 });
 
-// ── Date tabs ──
+// Date tabs
 document.querySelectorAll('.date-tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.date-tab').forEach(t=>t.classList.remove('active'));
@@ -981,7 +966,7 @@ document.querySelectorAll('.date-tab').forEach(tab=>{
   });
 });
 
-// ── Sport tabs ──
+// Sport tabs
 document.querySelectorAll('.sport-tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active'));
@@ -992,16 +977,12 @@ document.querySelectorAll('.sport-tab').forEach(tab=>{
   });
 });
 
-// ── Persist settings ──
+// Persist blog base URL
 const savedBase=localStorage.getItem('s803_blogbase');
 if(savedBase) document.getElementById('blogBase').value=savedBase;
 document.getElementById('blogBase').addEventListener('input',e=>localStorage.setItem('s803_blogbase',e.target.value));
 
-const savedStream=localStorage.getItem('s803_stream_v2');
-if(savedStream) document.getElementById('defaultStream').value=savedStream;
-document.getElementById('defaultStream').addEventListener('input',e=>localStorage.setItem('s803_stream_v2',e.target.value));
-
-// ── Init ──
+// Init
 buildLeagueFilter();
 </script>
 </body>
